@@ -1,26 +1,93 @@
 @import "tailwindcss";
 
+/*
+  The hero background is a warm off-white by design, so the OS dark-mode
+  override that used to sit here is removed. Leaving it in would flip the page to
+  near-black under a dark OS while the hero stays light, which is not a theme,
+  it is a broken combination. DESIGN..md 15.2 and 15.3 both specify a light hero.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f6f2;
+  --foreground: #18181b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Geist Pixel carries every piece of hero type, per the owner's reference. The
+     terminal is already the subject, so a mono face would restate the idea
+     instead of supporting it. */
+  --font-display: var(--font-geist-pixel);
+  --font-mono: var(--font-geist-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/*
+  The hero marquee runs on its own, not on scroll. Scroll is still the language
+  for the camera, per DESIGN..md 15.3, but the type is ambient texture and tying
+  it to scroll position made it read as a scrubbed slider.
+
+  Seamless by construction: each row holds two identical copies and the track
+  travels exactly one copy width, so the loop point lands on identical pixels.
+  No padding, no gap on the track itself, because any trailing space would
+  offset the repeat by a few pixels and show as a hitch once per cycle.
+*/
+@keyframes marquee-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.marquee-left {
+  animation-name: marquee-left;
+}
+
+.marquee-right {
+  animation-name: marquee-right;
+}
+
+/* Two densities out of one weight, via the pixel axis. */
+.pixel-dense {
+  font-variation-settings: "ELSH" 100;
+}
+
+.pixel-light {
+  font-variation-settings: "ELSH" 0;
+}
+
+/*
+  Reduced motion is a hard stop, not a slower loop. A marquee that still drifts
+  is still motion, and this one is large enough to be a problem.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    transform: none;
+  }
 }
