@@ -1,0 +1,174 @@
+{
+  "title": "My Projects 🧑‍💻",
+  "items": [
+    {
+      "tag": "Completed",
+      "title": "Corporate Platform — PT. Wijaya Laksmi Bhuana Agung",
+      "description": "Developed integrated corporate management and employee workspace platform.",
+      "techStack": ["Next.js", "Laravel", "MySQL"],
+      "images": [
+        "assets/projects/wlb3.png",
+        "assets/projects/wlb1.png",
+        "assets/projects/wlb2.png"
+      ],
+      "info": {
+        "year": "2026",
+        "role": "Full Stack"
+      },
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    },
+    {
+      "tag": "Completed",
+      "title": "Custom ERP — CV. Dejavanese Autoparts",
+      "description": "Developed ERP system for inventory, sales, and supply chain management.",
+      "techStack": ["Laravel", "MySQL", "Tailwind"],
+      "images": [
+        "assets/projects/djv1.png",
+        "assets/projects/djv2.png",
+        "assets/projects/djv3.png"
+      ],
+      "info": {
+        "year": "2026",
+        "role": "Full Stack"
+      },
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    },
+    {
+      "tag": "Completed",
+      "title": "Custom ERP — PPRQ Annasimiyyah",
+      "description": "ERP covering academics, syahriah payments, and permissions. Multi-role portal with official website and downloadable brochure.",
+      "techStack": ["Next.js", "Laravel", "MySQL"],
+      "images": [
+        "assets/projects/sipprq1.png",
+        "assets/projects/sipprq2.png",
+        "assets/projects/sipprq3.png"
+      ],
+      "info": {
+        "year": "2025",
+        "role": "Full Stack"
+      },
+      "links": {
+        "demo": "https://pprqportal.com/",
+        "github": "#"
+      }
+    },
+    {
+      "tag": "Completed",
+      "title": "LAZ MAJT Web System",
+      "description": "ERP for zakat, infaq, and donation management with public donation portal, zakat calculator, static CMS, and official website.",
+      "techStack": ["Laravel", "Tailwind", "MySQL"],
+      "images": [
+        "assets/projects/LAZ 1.webp",
+        "assets/projects/LAZ 2.webp"
+      ],
+      "info": {
+        "year": "2025",
+        "role": "Full Stack"
+      },
+      "links": {
+        "demo": "https://majt.or.id/",
+        "github": "#"
+      }
+    },
+    {
+      "tag": "Completed",
+      "title": "Custom ERP — Aruna Cipta Perkasa",
+      "description": "Highly customized ERP with 9 user roles, full N8N workflow automation, and AI integration. Includes the company's official website.",
+      "techStack": ["Next.js", "Laravel", "n8n", "AI"],
+      "images": [
+        "assets/projects/arcade1.webp",
+        "assets/projects/arcade2.webp",
+        "assets/projects/arcade3.webp"
+      ],
+      "info": {
+        "year": "2025",
+        "role": "Full Stack"
+      },
+      "links": {
+        "demo": "https://arcipta.com/",
+        "github": "#"
+      }
+    },
+    {
+      "tag": "Completed",
+      "title": "Email Blasting System — EmtekDigital",
+      "description": "Scalable Node.js email automation tool with scheduling, open rate tracking, and audience segmentation for an EO agency.",
+      "techStack": ["Node.js", "Express", "API"],
+      "images": [
+        "assets/projects/email1.webp",
+        "assets/projects/email2.webp",
+        "assets/projects/email3.webp"
+      ],
+      "info": {
+        "year": "2025",
+        "role": "Backend"
+      },
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    },
+    {
+      "tag": "Concept",
+      "title": "Odoo Module Contractor Management",
+      "description": "An Odoo module for contractor management, designed to streamline project workflows and enhance operational efficiency.",
+      "techStack": ["Odoo", "Python", "XML"],
+      "images": [
+        "assets/projects/odoo1.webp",
+        "assets/projects/odoo2.webp",
+        "assets/projects/odoo3.webp"
+      ],
+      "info": {
+        "year": "2025",
+        "role": "Odoo Developer"
+      },
+      "links": {
+        "demo": "#",
+        "github": "https://github.com/sakhandaru/odoo-dev"
+      }
+    },
+    {
+      "tag": "Concept",
+      "title": "Landing Page TVKU",
+      "description": "A modern, responsive landing page for TVKU, built with Next.js to ensure fast performance and SEO. Designed for a seamless user experience, focusing on modern design and accessibility.",
+      "techStack": ["Next.js", "Framer Motion"],
+      "images": [
+        "assets/projects/tvku1.webp",
+        "assets/projects/tvku2.webp",
+        "assets/projects/tvku3.webp",
+        "assets/projects/tvku4.webp"
+      ],
+      "info": {
+        "year": "2025",
+        "role": "Front-end"
+      },
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    },
+    {
+      "tag": "Concept",
+      "title": "Chatbot AI Assistant",
+      "description": "An intelligent AI chatbot for the TVKU platform, designed to boost user engagement with real-time, personalized support. Leverages modern AI and NLP to create an intuitive, user-centric experience.",
+      "techStack": ["React", "AI", "NLP", "Ollama"],
+      "images": [
+        "assets/projects/ai1.webp"
+      ],
+      "info": {
+        "year": "2025",
+        "role": "AI Developer"
+      },
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    }
+  ]
+}

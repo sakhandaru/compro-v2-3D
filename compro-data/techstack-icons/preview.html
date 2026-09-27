@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Techstack Icons — Rifqi Sakha</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f0f13;
+      color: #e2e2e8;
+      padding: 40px 24px;
+      min-height: 100vh;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.subtitle {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 40px;
+    }
+    .category { margin-bottom: 36px; }
+    .category h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #666;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e1e2e;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .icon-card {
+      background: #1a1a24;
+      border: 1px solid #2a2a38;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 180px;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+    .icon-card:hover {
+      border-color: #4a4a6a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .icon-card img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      filter: brightness(0) invert(1) opacity(0.85);
+    }
+    .icon-card .info { flex: 1; }
+    .icon-card .name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e2e2e8;
+    }
+    .icon-card .file {
+      font-size: 0.7rem;
+      color: #555;
+      margin-top: 2px;
+    }
+    .color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Techstack Icons</h1>
+  <p class="subtitle">Rifqi Sakha — All icons sourced from simpleicons.org | SVG files in this folder</p>
+
+  <div class="category">
+    <h2>🔤 Languages</h2>
+    <div class="grid">
+      <div class="icon-card">
+        <img src="javascript.svg" alt="JavaScript" style="filter: none;" /><div class="info"><div class="name">JavaScript</div><div class="file">javascript.svg</div></div><div class="color-dot" style="background:#F7DF1E;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="typescript.svg" alt="TypeScript" style="filter: none;" /><div class="info"><div class="name">TypeScript</div><div class="file">typescript.svg</div></div><div class="color-dot" style="background:#3178C6;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="php.svg" alt="PHP" /><div class="info"><div class="name">PHP</div><div class="file">php.svg</div></div><div class="color-dot" style="background:#777BB4;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="python.svg" alt="Python" style="filter: none;" /><div class="info"><div class="name">Python</div><div class="file">python.svg</div></div><div class="color-dot" style="background:#3776AB;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="category">
+    <h2>⚡ Frameworks & Libraries</h2>
+    <div class="grid">
+      <div class="icon-card">
+        <img src="react.svg" alt="React" style="filter: none;" /><div class="info"><div class="name">React</div><div class="file">react.svg</div></div><div class="color-dot" style="background:#61DAFB;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="nextjs.svg" alt="Next.js" /><div class="info"><div class="name">Next.js</div><div class="file">nextjs.svg</div></div><div class="color-dot" style="background:#fff; border:1px solid #333;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="laravel.svg" alt="Laravel" style="filter: none;" /><div class="info"><div class="name">Laravel</div><div class="file">laravel.svg</div></div><div class="color-dot" style="background:#FF2D20;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="nodejs.svg" alt="Node.js" style="filter: none;" /><div class="info"><div class="name">Node.js</div><div class="file">nodejs.svg</div></div><div class="color-dot" style="background:#339933;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="flask.svg" alt="Flask" /><div class="info"><div class="name">Flask</div><div class="file">flask.svg</div></div><div class="color-dot" style="background:#fff; border:1px solid #333;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="category">
+    <h2>🗄️ Databases</h2>
+    <div class="grid">
+      <div class="icon-card">
+        <img src="mysql.svg" alt="MySQL" style="filter: none;" /><div class="info"><div class="name">MySQL</div><div class="file">mysql.svg</div></div><div class="color-dot" style="background:#4479A1;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="postgresql.svg" alt="PostgreSQL" style="filter: none;" /><div class="info"><div class="name">PostgreSQL</div><div class="file">postgresql.svg</div></div><div class="color-dot" style="background:#4169E1;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="mariadb.svg" alt="MariaDB" style="filter: none;" /><div class="info"><div class="name">MariaDB</div><div class="file">mariadb.svg</div></div><div class="color-dot" style="background:#003545;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="category">
+    <h2>🛠️ Tools & DevOps</h2>
+    <div class="grid">
+      <div class="icon-card">
+        <img src="n8n.svg" alt="n8n" style="filter: none;" /><div class="info"><div class="name">n8n</div><div class="file">n8n.svg</div></div><div class="color-dot" style="background:#EA4B71;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="docker.svg" alt="Docker" style="filter: none;" /><div class="info"><div class="name">Docker</div><div class="file">docker.svg</div></div><div class="color-dot" style="background:#2496ED;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="linux.svg" alt="Linux" style="filter: none;" /><div class="info"><div class="name">Linux</div><div class="file">linux.svg</div></div><div class="color-dot" style="background:#FCC624;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="git.svg" alt="Git" style="filter: none;" /><div class="info"><div class="name">Git</div><div class="file">git.svg</div></div><div class="color-dot" style="background:#F05032;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="category">
+    <h2>🎨 Design & Project Management</h2>
+    <div class="grid">
+      <div class="icon-card">
+        <img src="figma.svg" alt="Figma" style="filter: none;" /><div class="info"><div class="name">Figma</div><div class="file">figma.svg</div></div><div class="color-dot" style="background:#F24E1E;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="notion.svg" alt="Notion" /><div class="info"><div class="name">Notion</div><div class="file">notion.svg</div></div><div class="color-dot" style="background:#fff; border:1px solid #333;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="jira.svg" alt="Jira" style="filter: none;" /><div class="info"><div class="name">Jira</div><div class="file">jira.svg</div></div><div class="color-dot" style="background:#0052CC;"></div>
+      </div>
+      <div class="icon-card">
+        <img src="trello.svg" alt="Trello" style="filter: none;" /><div class="info"><div class="name">Trello</div><div class="file">trello.svg</div></div><div class="color-dot" style="background:#0052CC;"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

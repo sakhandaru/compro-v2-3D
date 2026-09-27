@@ -1,0 +1,49 @@
+{
+  "categories": {
+    "languages": {
+      "label": "Languages",
+      "items": [
+        { "name": "JavaScript", "iconFile": "techstack-icons/javascript.svg", "color": "#F7DF1E", "simpleIconsSlug": "javascript" },
+        { "name": "TypeScript", "iconFile": "techstack-icons/typescript.svg", "color": "#3178C6", "simpleIconsSlug": "typescript" },
+        { "name": "PHP", "iconFile": "techstack-icons/php.svg", "color": "#777BB4", "simpleIconsSlug": "php" },
+        { "name": "Python", "iconFile": "techstack-icons/python.svg", "color": "#3776AB", "simpleIconsSlug": "python" }
+      ]
+    },
+    "frameworks": {
+      "label": "Frameworks & Libraries",
+      "items": [
+        { "name": "React", "iconFile": "techstack-icons/react.svg", "color": "#61DAFB", "simpleIconsSlug": "react" },
+        { "name": "Next.js", "iconFile": "techstack-icons/nextjs.svg", "color": "#000000", "simpleIconsSlug": "nextdotjs", "darkInvert": true },
+        { "name": "Laravel", "iconFile": "techstack-icons/laravel.svg", "color": "#FF2D20", "simpleIconsSlug": "laravel" },
+        { "name": "Node.js", "iconFile": "techstack-icons/nodejs.svg", "color": "#339933", "simpleIconsSlug": "nodedotjs" },
+        { "name": "Flask", "iconFile": "techstack-icons/flask.svg", "color": "#000000", "simpleIconsSlug": "flask", "darkInvert": true }
+      ]
+    },
+    "databases": {
+      "label": "Databases",
+      "items": [
+        { "name": "MySQL", "iconFile": "techstack-icons/mysql.svg", "color": "#4479A1", "simpleIconsSlug": "mysql" },
+        { "name": "PostgreSQL", "iconFile": "techstack-icons/postgresql.svg", "color": "#4169E1", "simpleIconsSlug": "postgresql" },
+        { "name": "MariaDB", "iconFile": "techstack-icons/mariadb.svg", "color": "#003545", "simpleIconsSlug": "mariadb" }
+      ]
+    },
+    "tools": {
+      "label": "Tools & DevOps",
+      "items": [
+        { "name": "n8n", "iconFile": "techstack-icons/n8n.svg", "color": "#EA4B71", "simpleIconsSlug": "n8n" },
+        { "name": "Docker", "iconFile": "techstack-icons/docker.svg", "color": "#2496ED", "simpleIconsSlug": "docker" },
+        { "name": "Linux", "iconFile": "techstack-icons/linux.svg", "color": "#FCC624", "simpleIconsSlug": "linux", "darkInvert": true },
+        { "name": "Git", "iconFile": "techstack-icons/git.svg", "color": "#F05032", "simpleIconsSlug": "git" }
+      ]
+    },
+    "design_management": {
+      "label": "Design & Project Management",
+      "items": [
+        { "name": "Figma", "iconFile": "techstack-icons/figma.svg", "color": "#F24E1E", "simpleIconsSlug": "figma" },
+        { "name": "Notion", "iconFile": "techstack-icons/notion.svg", "color": "#000000", "simpleIconsSlug": "notion", "darkInvert": true },
+        { "name": "Jira", "iconFile": "techstack-icons/jira.svg", "color": "#0052CC", "simpleIconsSlug": "jira" },
+        { "name": "Trello", "iconFile": "techstack-icons/trello.svg", "color": "#0052CC", "simpleIconsSlug": "trello" }
+      ]
+    }
+  }
+}
