@@ -2,6 +2,13 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import HeroTwo from "@/components/hero-two";
+import SelectedWork from "@/components/selected-work";
+import Timeline from "@/components/timeline";
+import About from "@/components/about";
+import Contact from "@/components/contact";
+import PortalLoader, { type PortalHandle } from "@/components/portal-loader";
+import { PORTAL_FADE_END, PORTAL_START } from "@/components/terminal-palette";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -77,6 +84,18 @@ export default function HeroSection() {
   const driver = useRef({ t: 0 });
   const [reduced, setReduced] = useState(false);
   const [durations, setDurations] = useState<string[]>([]);
+  const [nodes, setNodes] = useState<PortalHandle>({
+    raster: null,
+    scanline: null,
+    readout: null,
+  });
+  /*
+    The latch. Once the fill has reached the end it stays there, so scrolling back up
+    does not empty the screen and slam the portal shut on work the reader has already
+    seen. A ref guards the state update because onComplete can fire again on a second
+    forward pass.
+  */
+  const latched = useRef(false);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -119,13 +138,12 @@ export default function HeroSection() {
   useLayoutEffect(() => {
     if (reduced || !section.current) return;
 
-    // Scroll drives the camera only. The type is not in this timeline, it runs on
-    // its own clock, so the two motions stay independent instead of collapsing
-    // into one scrubbed move.
+    // Scroll drives the camera and the portal fill. The type is not in this
+    // timeline, it runs on its own clock, so the two motions stay independent
+    // instead of collapsing into one scrubbed move.
     const context = gsap.context(() => {
-      gsap.to(driver.current, {
-        t: 1,
-        ease: "none",
+      const timeline = gsap.timeline({
+        defaults: { ease: "none" },
         scrollTrigger: {
           trigger: section.current,
           start: "top top",
@@ -134,18 +152,61 @@ export default function HeroSection() {
           invalidateOnRefresh: true,
         },
       });
+
+      /*
+        Phase one is the camera, and it is over before the loader appears. 15.4
+        wants the black screen to become the portal, and a portal only reads as a
+        surface if it has stopped moving; a loader drawn over a computer that is
+        still growing looks like a sticker.
+      */
+      timeline.to(driver.current, { t: 1, duration: PORTAL_START }, 0);
+
+      const portal = section.current?.querySelector("[data-portal]");
+      if (portal) timeline.fromTo(portal, { opacity: 0 }, { opacity: 1, duration: 0.08 }, PORTAL_START);
+
+      /*
+        The fill is written straight to the nodes instead of being tweened on them.
+        Two reasons: the readout is text, which cannot be tweened, and the latch
+        needs to override the scrubbed value, which a tween on the element would
+        fight. One writer, one source of truth.
+      */
+      const fill = { value: 0 };
+      timeline.to(
+        fill,
+        {
+          value: 1,
+          duration: 1 - PORTAL_FADE_END,
+          onUpdate: () => {
+            const value = latched.current ? 1 : fill.value;
+            if (nodes.raster) nodes.raster.style.transform = `scaleY(${value})`;
+            if (nodes.scanline) {
+              nodes.scanline.style.transform = `translate3d(0, ${value * 100}vh, 0)`;
+              nodes.scanline.style.opacity = value > 0 && value < 1 ? "0.85" : "0";
+            }
+            if (nodes.readout) {
+              nodes.readout.textContent = String(Math.round(value * 100)).padStart(3, "0");
+            }
+          },
+          onComplete: () => {
+            if (latched.current) return;
+            latched.current = true;
+          },
+        },
+        PORTAL_FADE_END,
+      );
     }, section);
 
     ScrollTrigger.refresh();
     return () => context.revert();
-  }, [reduced]);
+  }, [reduced, nodes]);
 
   if (reduced) {
     // No pinning, no marquee, no camera travel. The type sits under the canvas in
     // normal flow rather than behind it, because a static wall of repeated words
     // behind the subject is just noise.
     return (
-      <section className="min-h-screen bg-[#f7f6f2]">
+      <>
+        <section className="min-h-screen bg-[#f7f6f2]">
         <div className="relative h-[58vh] min-h-[320px] w-full">
           <HeroCanvas driver={driver} reduced />
         </div>
@@ -158,14 +219,32 @@ export default function HeroSection() {
               <li key={row.text}>{row.text}</li>
             ))}
           </ul>
-        </div>
-      </section>
+          </div>
+        </section>
+        <HeroTwo />
+        <SelectedWork />
+        <Timeline />
+        <About />
+        <Contact />
+      </>
     );
   }
 
   return (
-    <section ref={section} className="relative h-[420vh] bg-[#f7f6f2]">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <>
+      {/*
+        Runway in svh, sticky in dvh, and the difference is the whole point.
+        A vh runway is proportional to the viewport, so when the mobile URL bar
+        collapses the runway loses a full viewport of length and the same scrollY
+        lands much further along the timeline. Measured: the portal fill jumped from
+        093 to 100 mid-fill on an 844 to 700 pixel viewport change, which on a real
+        phone is every time the bar slides away. svh does not move, so the mapping
+        holds. dvh on the sticky is the opposite requirement: it must always match the
+        visible area exactly, or a strip of the next section peeks in when the bar
+        hides.
+      */}
+      <section ref={section} className="relative h-[600svh] bg-[#f7f6f2]">
+      <div className="sticky top-0 h-dvh overflow-hidden">
         {/*
           Order matters. The type sits below the canvas and the canvas is
           transparent, so the computer genuinely occludes the words passing
@@ -213,12 +292,34 @@ export default function HeroSection() {
         </div>
 
         {/*
+          Sits on top of the canvas, not after it. The loader belongs to the screen
+          the camera has flown into, and the canvas is the only thing that can supply
+          that surface, so anything placed in a separate section would land on the
+          warm page background instead of on black.
+        */}
+        <PortalLoader onNodes={setNodes} />
+
+        {/*
           The field carries no headline, so the name is exposed here instead. It is
           the page's only h1 and it is what a screen reader, a search crawler and a
           link preview get.
         */}
         <h1 className="sr-only">{NAME}</h1>
-      </div>
-    </section>
+        </div>
+      </section>
+      {/*
+        A sibling of the hero, never a child of it. The hero is a fixed 600vh runway,
+        so anything nested inside it would collide with the sticky viewport instead of
+        following it. And it is never conditionally rendered: hiding it until the fill
+        completed would change the document height under the reader and yank the page
+        out from under them. Reaching it already requires scrolling past the whole
+        fill, so it cannot be reached unopened.
+      */}
+      <HeroTwo />
+      <SelectedWork />
+      <Timeline />
+      <About />
+      <Contact />
+    </>
   );
 }

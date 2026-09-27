@@ -84,6 +84,27 @@ export const SCREEN_BLEED = 0.94;
 export const CAMERA_LAG = 1.7;
 
 /**
+ * Scroll split across the hero. The camera has to finish before the portal opens,
+ * otherwise the loading draws over a computer that is still growing, and the screen
+ * stops reading as a surface. DESIGN..md 15.4 wants the black screen to become the
+ * portal, so the loader has to land on a screen that has already stopped moving.
+ * The fill gets the remaining 0.22, which is 150vh of scroll at the current runway.
+ */
+export const PORTAL_START = 0.7;
+export const PORTAL_FADE_END = 0.78;
+
+/**
+ * The loading surface. A horizontal web progress bar would undercut the whole
+ * terminal, so the screen warms up instead: a dim raster sweeps down and a bright
+ * scanline rides its edge. The raster is barely lighter than the screen, because a
+ * CRT coming on does not get bright, it gets less black. Green is deliberately not
+ * used; it would introduce a hue the rest of the page does not have.
+ */
+export const RASTER_FILL = "#1e1d24";
+export const SCANLINE = "#e8e4d8";
+export const PORTAL_INK = "#efece2";
+
+/**
  * Breathing room around the model in the wide shot. The marquee is a full-bleed
  * field and the model sits on top of it, so this is purely about how much
  * presence the terminal has.

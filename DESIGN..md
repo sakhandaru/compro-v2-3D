@@ -1,4 +1,15 @@
-# MASTER DESIGN --- RIFQI SAKHO PERSONAL PORTFOLIO
+# MASTER DESIGN --- SAKHANDARU PERSONAL PORTFOLIO
+
+> Design Read: portfolio personal untuk designer dan full-stack
+> developer, bahasa visual editorial-teknis (terminal, pixel type,
+> warm paper). **Dial: ENERGY 3 / RHYTHM 2 / MOTION 2.**
+>
+> ENERGY 3 karena hero dan computer portal harus tetap eksperimental
+> seperti §1 dan §4 minta. RHYTHM 2, bukan 3, karena §9
+> mensyaratkan chaos terkontrol dan hubungan antar section harus
+> konsisten, bukan selalu berubah. MOTION 2 karena scroll adalah
+> bahasa utama §3, tapi §11 melarang motion yang merampas kontrol;
+> zona scroll yang dicengkeram harus sedikit dan terlihat disengaja.
 
 > Dokumen ini adalah sumber kebenaran utama (single source of truth)
 > untuk arah desain, UX, motion, interaction, dan storytelling
@@ -69,15 +80,13 @@ pengalaman keseluruhan, **jangan gunakan**.
 Urutan pengalaman:
 
 ``` text
-01  ENTRANCE
+01  HERO
         ↓
-02  HERO
+02  COMPUTER PORTAL
         ↓
-03  COMPUTER PORTAL
+03  HERO KEDUA
         ↓
-04  INTRODUCTION
-        ↓
-05  SELECTED WORK
+04  SELECTED WORK
         ↓
 06  ALL WORK / ARCHIVE
         ↓
@@ -92,12 +101,11 @@ Makna setiap fase:
 
   Fase              Pertanyaan yang dijawab
   ----------------- ------------------------------------------
-  Entrance          Apa yang sedang terjadi?
   Hero              Apa pengalaman ini?
   Computer Portal   Apa yang harus saya masuki?
-  Introduction      Siapa Rifqi?
+  Hero Kedua        Siapa sakhandaru?
   Selected Work     Apa yang telah ia bangun?
-  Archive           Seberapa luas pekerjaannya?
+  Archive           Seberapa luas pekerjaannya?  (15.7, dilewati)
   Timeline          Bagaimana ia sampai di sini?
   About             Siapa orang di balik pekerjaan tersebut?
   Contact           Bagaimana saya terhubung dengannya?
@@ -801,9 +809,115 @@ progress berlanjut
 
 Loading bukan loading sungguhan; ia adalah **interaction device**.
 
+#### Implementasi (2026-09-27)
+
+Satu runway 600vh, dua fase, satu timeline:
+
+``` text
+0.00 → 0.70   kamera masuk ke layar
+0.70 → 0.78   loader muncul
+0.78 → 1.00   fill, 150vh scroll
+```
+
+Loader **digambar di atas canvas**, bukan di section terpisah. Ini
+pilihan yang menentukan apakah 15.4 terbaca atau tidak: black
+screen harus jadi permukaan, dan satu-satunya permukaan itu
+layar 3D yang baru saja kita masuki. Kalau loader dibuat
+section sendiri, ia akan mendarat di background hangat halaman
+dan kehilangan seluruh maknanya.
+
+Bentuknya bukan web progress bar. Layar memanas seperti CRT:
+raster mengisi dari atas, scanline ride di ujungnya, dan
+counter `000` ke `100`. Hijau tidak dipakai karena itu hue
+yang tidak ada di halaman ini.
+
+#### Latch (2026-09-27)
+
+Progress bersifat **latch**: sekali 100%, nilainya tetap.
+
+Alasannya bukan soal selera. Kalau fill-nya scroll
+reversible penuh, begitu reader scroll naik lagi angkanya
+mengosong dan portal terlihat menutup slam di atas pekerjaan
+yang sudah pernah dilihat. Itu terbaca sebagai rusak, bukan
+sebagai interaktif.
+
+Yang di-latch adalah **nilainya**, bukan opacity loader-nya.
+Jadi scroll balik tetap menarik kamera keluar, dan mesinnya
+terlihat sudah menyala.
+
+#### Runway: svh, bukan vh (2026-09-27)
+
+Runway ditulis `600svh`, sticky ditulis `100dvh`. Keduanya
+sengaja berbeda satuan.
+
+Runway `vh` sebanding dengan tinggi viewport, jadi waktu URL bar
+mobile menyusut, runway ikut kehilangan satu viewport penuh.
+Scrolly yang sama lalu jatuh jauh lebih jauh di timeline.
+Terukur: fill portal melompat dari `093` ke `100` pada scrollY
+yang sama saat viewport berubah 844 ke 700, dan di HP asli itu
+terjadi tiap kali URL bar bergeser. `svh` tidak bergerak, jadi
+petanya stabil.
+
+`dvh` pada sticky adalah kebutuhan yang berlawanan: ia harus
+selalu sama dengan area yang terlihat, kalau tidak akan ada
+potongan section berikutnya yang mengintip saat URL bar hilang.
+
+Belum terverifikasi di lingkungan build: headless Chrome tidak
+punya URL bar, jadi `vh`, `svh`, dan `dvh` identik di sana.
+Perlu dicek sekali di perangkat asli.
+
+#### HERO kedua
+
+Section sendiri, dan 15.5 Introduction menyusul setelahnya.
+Urutan shock → tenang → narasi.
+
+HERO kedua **selalu ada di document flow**, tidak pernah
+dirender kondisional. Menyembunyikannya sampai fill selesai
+akan mengubah tinggi dokumen di saat reader sudah sampai di
+tengah, dan seluruh halaman akan tersedot dari bawah kakinya.
+Mencapainya sudah mensyaratkan menggulir melewati seluruh
+fill, jadi tidak ada cara membukanya tanpa selesai.
+
+`prefers-reduced-motion` **melewati portal sepenuhnya** dan
+langsung ke HERO kedua. Fill tanpa scroll tidak punya arti, dan
+gerakannya besar.
+
+#### Nama (perlu diputuskan owner)
+
+Nama sudah diputuskan owner (2026-09-27): **sakhandaru**. Semua
+rujukan `Rifqi` / `Rifqi Sakho` di dokumen ini sudah diselaraskan
+ke `sakhandaru`, dan copy 15.5 di atas mengikuti keputusan yang
+sama. `sakhandaru` diperlakukan sebagai nama yang dipakai di
+public, bukan handle.
+
 ------------------------------------------------------------------------
 
 ## 15.5 Introduction
+
+**Owner memutuskan 15.5 tidak dibangun (2026-09-27).** Section
+ini dilewati, dan setelah Computer Portal + HERO kedua
+langsung masuk ke Selected Work.
+
+Alasannya bukan sekadar hemat section. HERO kedua sudah
+memikul beat tenang itu secara tonal, jadi 15.5 akan jadi
+cooldown kedua, dan §4 hanya menyediakan satu titik turun di
+sana. §1 sendiri memperingatkan "tanpa kontras tidak ada rasa
+dramatis".
+
+Konsekuensi yang harus diterima:
+
+-   Fermata antara chaos dan Selected Work hilang
+-   kata "sakhandaru" dan "based in indonesia" tidak lagi
+    ditulis besar di mana pun; identitas hanya hidup di hero
+-   15.10 "Callback ke Hero" kehilangan register cadangan:
+    HERO kedua sudah memakai bahasa tenang, jadi Contact
+    tidak bisa lagi menjadi versi matang dari bahasa Hero
+-   halaman praktis tanpa prosa panjang sama sekali
+
+Naskah di bawah ini dipertahankan sebagai referensi kalau
+owner berubah pikiran.
+
+---
 
 Introduction adalah **cooldown setelah chaos**.
 
@@ -822,10 +936,11 @@ Narasi secara umum:
 ``` text
 HELLO.
 ↓
-I'M RIFQI.
+I'M SAKHANDARU.
 ↓
-I'M RIFQI SAKHO,
-A SOFTWARE DEVELOPER
+I'M SAKHANDARU,
+A UI/UX DESIGNER AND
+FULL-STACK DEVELOPER
 BASED IN INDONESIA.
 ↓
 I BUILD DIGITAL EXPERIENCES
@@ -844,6 +959,57 @@ Jangan membuat Introduction seperti CV atau About page generik.
 ------------------------------------------------------------------------
 
 ## 15.6 Selected Work
+
+#### Bentuk final: accordion (owner, 2026-09-27)
+
+Owner memutuskan 15.6 dibangun sebagai **accordion**, bukan
+section pinned yang dikendalikan scroll.
+
+Diagram progress di bawah **memang sudah state machine sebuah
+accordion**: satu project OPEN, sisanya tertutup, berjalan 01
+sampai 04. Yang berubah hanya sumbunya, dari baris horizontal
+ke tumpukan vertikal. Jadi ini bukan penyimpangan dari dokumen
+melainkan pembacaan yang lebih dekat ke maksudnya.
+
+Alasan mengubahnya, dan semuanya karena versi pinned mengambil
+terlalu banyak scroll milik pembaca:
+
+-   versi pinned punya 716svh scroll yang dicengkeram dan tidak
+    bisa dilewati untuk sampai ke 15.7
+-   93% halaman jadi zona sticky. Scroll tidak pernah dikembalikan
+    ke pembaca
+-   untuk melihat project 08, pembaca harus lewat 01 sampai 07
+    satu per satu
+-   jumlah bug di section itu sendiri (scaling salah, timeline
+    panjang 1.33, listener baca nilai basi, `inset` ditolak diam
+    diam, double exposure) adalah bukti complexity-nya tidak
+    sebanding dengan isi sebuah daftar project
+
+Yang didapat:
+
+-   tinggi section mengikuti isi, 1.64 viewport tertutup
+-   **delapan judul terlihat sekaligus.** Reader tahu seluruh isi
+    sebelum memilih, dan bisa langsung lompat ke project 08
+-   tanpa sticky, tanpa ScrollTrigger, tanpa runway
+-   keyboard dan screen reader jadi trivial
+
+Catatan jujur: yang hilang adalah "horizontal/expansive
+composition" dan bagian sticky. Keduanya tidak wajib, karena
+kalimatnya "dapat", bukan "harus". Yang hilang juga dramanya.
+15.6 tidak lagi mencoba menjadi hero kedua, dan itu memang
+bagus, karena hero sudah memegang satu zona scroll yang kuat.
+
+#### Deviasi dari teks di bawah (2026-09-27)
+
+-   "sekitar 4" menjadi 8 project pilihan. Sisanya ke 15.7
+-   `| 01 | 02 | 03 | 04 |` menjadi tumpukan vertikal
+-   scroll **tidak lagi** membuka project; klik atau Enter yang
+    membuka. Scroll hanya menggerakkan halaman
+-   satu project bisa punya banyak mockup (`screens`), dan hanya
+    yang pertama tampil di 15.6
+-   halaman project khusus ada dalam rencana tapi belum ada di
+    §2. Sementara itu 15.6 sengaja tidak membuat link ke
+    kemana-mana
 
 Selected Work berisi **sekitar 4 project flagship**, bukan seluruh
 portfolio.
@@ -889,6 +1055,22 @@ scroll
 ------------------------------------------------------------------------
 
 ## 15.7 All Work / Archive
+
+**Owner memutuskan 15.7 tidak dibangun (2026-09-27).**
+
+Alasannya menyatu: tidak ada halaman project khusus, dan accordion
+di 15.6 sudah cukup. 15.7 tugasnya "menunjukkan breadth" dengan
+memberi jalan ke seluruh project. Tanpa halaman detail, tiap baris
+tidak punya tujuan, jadi Archive hanya jadi daftar yang lebih
+panjang dari baris yang sudah ada di 15.6.
+
+Catatan: ini bukan berarti portfolio-nya sedikit. Delapan project
+sudah ditampilkan seluruhnya di 15.6.
+
+Kalau nanti halaman project dibangun, 15.7 kembali masuk akal dan
+`slug` di `projects.ts` sudah tersedia untuk itu.
+
+---
 
 Portfolio memiliki banyak project.
 
@@ -981,6 +1163,101 @@ STILL BUILDING.
 
 atau statement sejenis menjadi bridge menuju About.
 
+### Implementasi
+
+Reference yang dipakai pemilik adalah timeline Michał Gren: blok teks di
+kiri atas, kartu melayang di tengah, ruler full-bleed, readout di bawah kiri.
+Komposisi itu diikuti, skin hitamnya tidak: section tetap cream, dan kartu
+tetap teks karena belum ada gambar.
+
+Desktop `>= 1024px` dipin. Scroll vertikal tidak ditelan, tapi membaca scroll
+halaman sendiri lalu menggeser track, jadi satu kali flick ke bawah tetap
+majukan perjalanan. Di bawah breakpoint dan untuk reduced motion, isi yang
+sama dirender sebagai daftar vertikal tanpa pin sama sekali.
+
+**Jarak sama semua, bukan skala waktu.** Versi pertama menaruh tiap entry di
+tahun desimalnya, jadi jaraknya tidak merata: 2019 ke 2022 itu tiga tahun,
+lalu empat entry terakhir terjepit dalam 1,6 tahun. Pemilik melihatnya dan
+bertanya apa gunanya tahun-tahun itu. Fair. Jarak yang tidak rata itu tidak
+menyampaikan apa pun yang bisa dipakai pembaca, hanya membuat section terlihat
+rusak, dan ruler pun butuh label di setiap tahun untuk membenarkan dirinya.
+
+Jadi jaraknya dibuat sama rata. Ruler jadi Texture, bukan kalender, dan
+tahun pindah ke kartu masing-masing, di situ memang tempatnya.
+
+| Keputusan | Nilai | Alasan |
+| --- | --- | --- |
+| `TRACKS` | `4` | jarak 0,375 viewport antar kartu, comparable dengan reference |
+| `STEP` | `(1 - 2 * HEAD) / 8` | jarak sama, ujung tetap bisa sampai ke tengah |
+| Sumbu baca | tepi kiri kolom teks | pemilik: yang membesar harus yang **kiri**, sejajar dengan yang di bawahnya |
+| `FALLOFF` | `0.48` | kartu berjarak 0,375, jadi di bawah itu tetangga langsung hilang |
+| `DIM` / `SMALL` | `0.18` / `0.87` | kartu yang tidak tersorot: makin kecil dan makin transparan |
+| `GROW` | `1.07` | kartu yang tersorot membesar, jadi cuma satu fokus di layar |
+| `RUNWAY` | `400svh` | rasio gerak per scroll 1,2 |
+| `TICKS` | `240` varied `10-34px` | kepadatan dan texture ruler reference |
+
+### Sumbu baca di kiri
+
+Awalnya setiap kartu dipusatkan di layar dan aktifnya yang di tengah. Pemilik
+bilang lain: yang membesar harus yang **kiri**, supaya sejajar dengan yang ada
+di bawahnya. Jadi kartu tidak lagi dipusatkan pada posisinya, tapi digantung
+dari tepi kirinya, dan sumbu bacanya pindah ke tepi kiri kolom teks, bukan
+ke tengah viewport.
+
+Kartu, readout, dan heading sekarang berbagi satu garis vertikal. Terukur
+selaras **0px** di 1920, 1440, 1280, 1100, dan 1024, dan semuanya ikut turun
+ke gutter 32px begitu kolom tidak lagi muat.
+
+Aktifnya entry dihitung dari jarak tepi kiri kartu ke sumbu itu, memakai
+geometri yang sama dengan yang menggeser track, jadi readout tidak pernah
+melompat di depan kartu yang ada di bawahnya.
+
+Jitter tick pakai hash sinus tetap, bukan `Math.random`, alasannya sama dengan
+marquee hero: ruler harus di tempat yang sama tiap load, kalau tidak ia
+berkedip tiap refresh.
+
+Tiga bug yang ketahuan saat dibangun:
+
+1. Readout melompat 2 entry di depan kartu yang ada di bawah pembaca,
+   karena `active` dihitung dari `position = t * last` padahal jarak kartu
+   tidak seragam.
+2. `Math.min(position, 1)` menumpuk entry 06, 07, dan 08 persis di piksel
+   yang sama: tiga kartu bertumpuk, hanya yang pertama terjangkau.
+3. Bridge `STILL BUILDING.` menutupi 40% bawah viewport yang dipin, jadi
+   milestone terakhir kehilangan kartu, ruler, dan readout-nya. Dipindah
+   keluar dari section, jadi muncul setelah pin selesai.
+
+Bug 1 dan 2 hilang bersama skala waktunya. Bug 3 tidak, dan tetap dicatat
+di sini karena bridge masih bagian dari 15.8.
+
+### Focal point
+
+`GROW` punya konstanta sendiri dan tidak diturunkan dari `SMALL`. Versi
+pertama menulis interpolasinya `SMALL + weight * (1 - SMALL)`, yang benar
+untuk opacity karena kartu aktif harus mendarat persis di 1, tapi salah
+untuk scale: aktifnya mentok di 1 dan tidak pernah membesar sama sekali.
+`SMALL + weight * (GROW - SMALL)` yang benar. Skala di-anchor ke tepi bawah
+supaya kartu tumbuh keluar dari ruler, bukan melayang lepas darinya.
+
+### Keputusan pemilik
+
+| Elemen | Keputusan | Aturan yang bersinggungan |
+| --- | --- | --- |
+| Tahun raksasa di kanan bawah | **Dihapus** | 1,17:1, R-25 minta 3:1 untuk teks sebesar itu. Tahun sudah ada di caption, jadi tidak ada yang hilang. Diganti counter `04 / 09` yang sesuai motif CRT |
+| Tick ruler | **Tetap tipis** (1,37:1) | R-25. Tick adalah tekstur, bukan informasi: urutan dan tanggal dibawa kartu |
+| Label tahun di ruler | **Dihapus** | Pemilik: "tahunnya ada apa-apanya, ga usah ditulis". Konsekuensi: ruler bukan lagi skala kalender |
+| Jarak antar item | **Sama rata** | Pemilik: "biar jaraknya antar item sama semua". Konsekuensi: `at` tidak lagi dipakai untuk posisi |
+| `2025 — 2026` di copy pemilik | **Dipertahankan** | R-02 hanya mengikat teks yang ditulis agent, bukan copy pemilik. Em dash di header yang ditulis agent sudah diganti `2019 to 2026` |
+| Section tetap cream | **Ya** | Reference hitam, identitas situs cream |
+
+Jumlah milestone 9, di luar "sekitar 6--8" di atas. Sembilan ini semuanya
+turning point nyata, dan memotong salah satunya keputusan yang salah, jadi
+selisihnya dicatat, bukan dirapikan diam-diam.
+
+Belum ada baris metrik pada kartu. Reference punya
+(`−52% SETUP TIME · +21% TRIAL → PAID`), dan R-17 melarang angka tanpa
+sumber, jadi menunggu angka asli dari pemilik.
+
 ------------------------------------------------------------------------
 
 ## 15.9 About
@@ -1038,6 +1315,70 @@ Hindari:
 -   percentage charts
 -   excessive 3D
 -   unnecessary icons
+
+### Implementasi
+
+Rail tipis di kiri, kolom lebar di sebelahnya, satu label mono kecil di rail
+dan kalimat sebenarnya di kolom. Feed divider tipis antar blok. Itu composing
+editorial asimetris yang diminta, dan rail-nya adalah sumbu kiri yang sama
+yang dibaca Timeline, jadi section ini kelanjutan tenang dari garis yang sama,
+bukan ide baru.
+
+`subtle grid` sengaja tidak dipakai. Struktur sudah datang dari rail dan
+divider, dan Menambah pola grid di atas itu jadi dekorasi, yang dilarang R-07
+tanpa alasan.
+
+Tidak ada satu pun animasi di section ini. Hero, portal, dan Timeline
+bergerak; section yang dimaksud jadi bagian paling tenang di halaman tidak
+perlu bersaing memperebutkan perhatian. MOTION di halaman ini 2, dan blok
+editorial yang diam adalah jeda ritme yang sah, bukan animasi yang hilang.
+
+### Isi
+
+Pemilik menulis sendiri, dan itu pilihan yang benar. Isinya cuma dua
+kalimat, dan pendek itu disengaja:
+
+> I'm a Software Engineer who enjoys turning complex ideas and business needs
+> into simple, reliable software.
+>
+> My work spans web applications, ERP platforms, and business systems, with a
+> focus on building solutions that are practical, maintainable, and built to
+> last.
+
+Kata-kata itu dipakai apa adanya. Kalimat pertama jadi statement, kalimat
+kedua jadi paragraf, keduanya tanpa rail karena tidak ada label kategori
+untuknya, jadi keduanya jatuh satu kolom penuh.
+
+Tidak ada narasi `HOW I THINK`, `OUTSIDE THE SCREEN`, atau `CURRENTLY` yang
+disebutkan di atas. Semuanya ditanyakan, dan jawabannya "itu aja". Slot-nya
+masih ada di `components/about-content.ts` kalau suatu saat mau diisi, tapi
+section ini sekarang benar-benar hanya mengulang dirinya sendiri dalam dua
+kalimat, dan itu hak pemilik.
+
+### Skills
+
+Pemilik juga minta skill-nya ditampilkan, dan minta daftarnya ditulis
+sendiri. Bentuknya dipilih agar sesuai konsep section, bukan default:
+
+-   satu daftar datar, tanpa pengelompokan sama sekali
+-   nama skill jadi deretan biasa yang membungkus, dipisah middot
+-   tanpa pill, tanpa border per item, tanpa bar, tanpa persentase
+
+Awalnya skill dikelompokkan ke dalam kategori dengan label di rail kiri.
+Pemilik bilang "tidak usah kategori lain", jadi pengelompokannya dihapus
+dan skills jadi satu array datar. Efek sampingnya bagus: tidak ada lagi
+kategori yang bisa menggantungkan satu ikon, jadi pertanyaan ikon menyempit
+dari dua bentuk jadi satu, yaitu ikon per nama skill.
+
+Yang menentukan: `JavaScript 85%` tidak akan naik ke halaman ini. 15.9
+menaruh "skill badges" dan "percentage charts" di daftar avoid, R-09 melarang
+kapsul, dan R-17 melarang angka tanpa sumber, jadi tidak ada versi yang
+mengracuni ketiga aturan itu sekaligus. Yang tersisa adalah versi jujurnya:
+nama-namanya saja, tanpa klaim apa pun tentang seberapa jago kamu di dalamnya.
+
+Placeholder-nya tinggal diisi di `components/about-content.ts`. Key list pakai
+index, bukan nama skill, supaya nama yang sama tetap aman kalau suatu saat
+diulang.
 
 ------------------------------------------------------------------------
 
@@ -1120,6 +1461,60 @@ LET'S TALK.
 Website terasa **closing the loop**.
 
 Tidak ada section setelah Contact.
+
+### Implementasi
+
+Contact dan footer jadi satu section, sesuai "tidak ada section setelah
+Contact". Footer-nya strips tipis di dalam section yang sama, bukan elemen
+yang menggantung setelahnya.
+
+**Callback ke Hero, lewat skala bukan mekanik.** Paragraf di atas minta dua
+hal yang kelihatan bertabrakan: callback ke Hero dengan repeated text dan
+horizontal movement, sekaligus controlled typography dengan slow movement dan
+low density. Keduanya bisa dipenuhi bersamaan, asal yang berubah adalah
+skala, bukan mekaniknya.
+
+| | Hero | Contact |
+| --- | --- | --- |
+| baris | 5 | 1 |
+| kecepatan | 370-388 px/s | 22 px/s, 6% dari Hero |
+| kontras | penuh | 1,37:1, `aria-hidden` |
+| interaksi | tidak ada | `mailto:` asli di bawahnya |
+
+Jadi callback-nya satu baris alamat email yang meluncur sangat lambat, dengan
+link `mailto:` asli yang bisa diklik dan bisa difokus di bawahnya. Gerak dan
+pengulangannya bahasa Hero; kecepatan, kepadatan, dan kontrasnya bahasa
+Contact. Marquee 5 baris yang dikloning akan memenuhi callback dan melanggar
+paragraf tepat di sebelahnya, dan akan jadi act berat keempat di halaman yang
+sudah pin dua kali.
+
+Baris yang bergerak itu dekorasi dan tautan yang bisa diklik itu nyata, susunan
+yang sama dengan tick ruler dan tahun raksasa yang sudah diputuskan pemilik
+sebelumnya: sesuatu yang diam bergerak, sesuatu yang solid berfungsi.
+
+Kelas marquee milik Hero dipakai ulang, bukan set keyframes kedua, jadi aturan
+reduced motion yang sudah ada ikut menghentikan WITHOUT saya menulis ulang.
+
+**Tidak ada form.** 15.10 mengizinkan form sebagai interaksi sekunder, tapi
+form butuh tujuan POST, dan form yang tidak bisa dikirim adalah kontrol mati.
+`mailto:` tidak bisa gagal, jadi tidak butuh empty, loading, dan error state
+yang R-27 minta dari apa pun yang bisa gagal.
+
+### Data dari `compro-data`
+
+Detail kontak diambil dari `compro-data/content/personal.json`, dengan tiga
+pengecualian yang disengaja:
+
+| Dari JSON | Yang dipakai | Kenapa tidak apa adanya |
+| --- | --- | --- |
+| `name.display: "Rifqis Sakha"` | tetap `sakhandaru` | Pemilik sudah menetapkan nickname untuk seluruh situs, dan `DESIGN..md` diselaraskan. Mengikuti JSON di sini akan membatalkan itu diam-diam |
+| `socials.linkedin` | tidak dilink | URL-nya `https://linkedin.com/in/Rifqis Sakha`, ada spasi di path, jadi tidak resolve. Menebak slug aslinya berarti mengarang, dan link ke 404 lebih buruk daripada tidak ada link. Diperbaiki di JSON, dia muncul sendiri tanpa ubah kode |
+| `socials.whatsapp` / `instagram` / `gitlab` | tidak ditampilkan | 15.10 minta informasi kontak yang tetap sederhana. Lima baris sosial identik di bawah satu kalimat adalah daftar link, bukan cara untuk menghubungi |
+| `year: "2026"` | dibaca dari jam | Tahun yang diketik ke file data adalah tahun yang diam-diam salah setiap Januari dan tidak ada yang menandai |
+
+Yang tampil: `mailto:rifqiagha7@gmail.com` sebagai CTA utama, github dan
+situs di bawahnya sebagai dua pintu masuk lain, serta `SEMARANG, INDONESIA`
+di footer. Nol kontrol mati, nol 404.
 
 ------------------------------------------------------------------------
 
@@ -1277,7 +1672,7 @@ Sebelum menerima desain atau perubahan baru, evaluasi:
 
 ### Identity
 
--   Apakah ini terasa seperti portfolio Rifqi?
+-   Apakah ini terasa seperti portfolio sakhandaru?
 -   Apakah ini terlalu mirip template?
 -   Apakah elemen ini bisa ditemukan di ribuan portfolio developer lain?
 
@@ -1335,7 +1730,7 @@ ONE MEMORABLE JOURNEY.
 Portfolio ini berhasil jika user selesai scrolling dan merasa:
 
 > **"Aku tidak hanya melihat portfolio. Aku mengalami perjalanan yang
-> perlahan memperkenalkan siapa Rifqi, apa yang dia bangun, bagaimana
+> perlahan memperkenalkan siapa sakhandaru, apa yang dia bangun, bagaimana
 > dia sampai di sana, bagaimana dia berpikir, dan akhirnya bagaimana aku
 > bisa menghubunginya."**
 
