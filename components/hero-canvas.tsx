@@ -4,7 +4,9 @@ import { Component, useEffect, useRef, useState } from "react";
 import type { ReactNode, RefObject } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, useProgress } from "@react-three/drei";import HeroModel, { type TerminalHandle } from "@/components/hero-model";
+import { Environment, Lightformer, useProgress } from "@react-three/drei";
+import HeroModel, { type TerminalHandle } from "@/components/hero-model";
+import { heroContent } from "@/content/hero";
 import {
   AMBIENT_INTENSITY,
   BACK_FILL_INTENSITY,
@@ -221,7 +223,7 @@ function LoadBar() {
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-20 px-4 pt-4">
       <p className="font-mono text-[11px] tracking-wide text-zinc-600">
-        {errors.length > 0 ? "model gagal dimuat" : `memuat model ${progress.toFixed(0)}%`}
+        {errors.length > 0 ? heroContent.model.error : `${heroContent.model.loading} ${progress.toFixed(0)}%`}
       </p>
       <div className="mt-2 h-px w-full bg-zinc-300">
         <div className="h-px bg-zinc-900" style={{ width: `${progress}%` }} />

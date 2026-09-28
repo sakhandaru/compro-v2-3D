@@ -101,7 +101,20 @@ export default function ProjectGallery({
             </svg>
           </button>
 
-          <div className="mt-6 flex items-center justify-center gap-2">
+          {/*
+            The dots were the worst tap targets on the page: `h-1.5 w-1.5` with no
+            padding, so the button box was six by six pixels and the gap between two
+            of them was eight. On a desktop cursor that is a small dot; under a thumb
+            it is a control that cannot be hit, and the eight pixel gap means two
+            neighbouring targets sat close enough to read as one.
+
+            So the button is 44 by 44 and the dot is a child centred inside it. The
+            row gap goes to zero, because two 44 pixel boxes laid side by side already
+            touch exactly, and any gap on top of that would only open a dead strip
+            between them. The visual result is the same six and twenty four pixel
+            marks, just spaced at a pitch a finger can aim at.
+          */}
+          <div className="mt-6 flex items-center justify-center">
             {screens.map((screen, i) => (
               <button
                 key={screen}
@@ -109,10 +122,17 @@ export default function ProjectGallery({
                 onClick={() => setIndex(i)}
                 aria-label={`Show capture ${i + 1} of ${screens.length}`}
                 aria-current={i === index}
-                className={`h-1.5 cursor-pointer rounded-full transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 ${
-                  i === index ? "w-6 bg-zinc-900" : "w-1.5 bg-zinc-300 hover:bg-zinc-500"
-                }`}
-              />
+                className="group/dot grid h-11 w-11 cursor-pointer place-items-center focus-visible:outline-2 focus-visible:outline-zinc-900"
+              >
+                <span
+                  aria-hidden
+                  className={`block rounded-full transition-all ${
+                    i === index
+                      ? "h-1.5 w-6 bg-zinc-900"
+                      : "h-1.5 w-1.5 bg-zinc-300 group-hover/dot:bg-zinc-500"
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </>

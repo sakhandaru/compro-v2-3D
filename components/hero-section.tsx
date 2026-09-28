@@ -8,7 +8,15 @@ import Timeline from "@/components/timeline";
 import About from "@/components/about";
 import Contact from "@/components/contact";
 import PortalLoader, { type PortalHandle } from "@/components/portal-loader";
-import { PORTAL_FADE_END, PORTAL_START } from "@/components/terminal-palette";
+import { heroContent } from "@/content/hero";
+import { siteContent } from "@/content/site";
+import {
+  BAR_CELLS,
+  BAR_TRACK_INK,
+  PORTAL_FADE,
+  PORTAL_INK,
+  PORTAL_START,
+} from "@/components/terminal-palette";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -24,45 +32,7 @@ gsap.registerPlugin(ScrollTrigger);
  * roles alternate in tone so the field reads as one texture with a rhythm, not five
  * unrelated lines. Lowercase throughout, matching the reference.
  */
-const NAME = "sakhandaru";
 
-const ROWS = [
-  {
-    text: "ui/ux designer",
-    direction: "left",
-    density: "pixel-dense",
-    tone: "text-zinc-900",
-    speed: 1,
-  },
-  {
-    text: "full-stack developer",
-    direction: "right",
-    density: "pixel-light",
-    tone: "text-zinc-900/45",
-    speed: 0.95,
-  },
-  {
-    text: NAME,
-    direction: "left",
-    density: "pixel-dense",
-    tone: "text-zinc-900",
-    speed: 1.05,
-  },
-  {
-    text: "delivering business value",
-    direction: "right",
-    density: "pixel-light",
-    tone: "text-zinc-900/45",
-    speed: 0.97,
-  },
-  {
-    text: "architecting for scale",
-    direction: "left",
-    density: "pixel-dense",
-    tone: "text-zinc-900",
-    speed: 1.02,
-  },
-] as const;
 
 /**
  * Copies of each phrase inside one half of the loop. The track animates by exactly
@@ -85,8 +55,7 @@ export default function HeroSection() {
   const [reduced, setReduced] = useState(false);
   const [durations, setDurations] = useState<string[]>([]);
   const [nodes, setNodes] = useState<PortalHandle>({
-    raster: null,
-    scanline: null,
+    bar: null,
     readout: null,
   });
   /*
@@ -126,7 +95,7 @@ export default function HeroSection() {
       if (!tracks?.length) return;
       setDurations(
         Array.from(tracks, (track, i) => {
-          const speed = MARQUEE_SPEED * (ROWS[i]?.speed ?? 1);
+          const speed = MARQUEE_SPEED * (heroContent.rows[i]?.speed ?? 1);
           return `${(track.scrollWidth / 2 / speed).toFixed(2)}s`;
         }),
       );
@@ -162,7 +131,7 @@ export default function HeroSection() {
       timeline.to(driver.current, { t: 1, duration: PORTAL_START }, 0);
 
       const portal = section.current?.querySelector("[data-portal]");
-      if (portal) timeline.fromTo(portal, { opacity: 0 }, { opacity: 1, duration: 0.08 }, PORTAL_START);
+      if (portal) timeline.fromTo(portal, { opacity: 0 }, { opacity: 1, duration: PORTAL_FADE }, PORTAL_START);
 
       /*
         The fill is written straight to the nodes instead of being tweened on them.
@@ -175,16 +144,35 @@ export default function HeroSection() {
         fill,
         {
           value: 1,
-          duration: 1 - PORTAL_FADE_END,
+          duration: 1 - PORTAL_START,
           onUpdate: () => {
             const value = latched.current ? 1 : fill.value;
-            if (nodes.raster) nodes.raster.style.transform = `scaleY(${value})`;
-            if (nodes.scanline) {
-              nodes.scanline.style.transform = `translate3d(0, ${value * 100}vh, 0)`;
-              nodes.scanline.style.opacity = value > 0 && value < 1 ? "0.85" : "0";
+
+            /*
+              The bar. Two spans rather than one string, so the filled and empty
+              halves can carry different colours: a single `textContent` cannot be
+              half one ink and half another.
+
+              The cell count is rounded rather than floored, so the bar always shows
+              at least one lit cell from the very first pixel of the fill. A floor
+              leaves the reader scrolling an entirely dark bar and wondering whether
+              anything is happening.
+
+              Two characters per cell is deliberately avoided. A half block at the
+              boundary would need a third colour to sit between the two inks, and
+              the eye reads that notch as a rendering fault rather than as progress.
+            */
+            if (nodes.bar) {
+              const lit = Math.max(1, Math.round(value * BAR_CELLS));
+              const on = "\u2588".repeat(lit);
+              const off = "\u2591".repeat(BAR_CELLS - lit);
+              nodes.bar.innerHTML =
+                `<span style="color:${PORTAL_INK}">${on}</span>` +
+                `<span style="color:${BAR_TRACK_INK}">${off}</span>`;
             }
+
             if (nodes.readout) {
-              nodes.readout.textContent = String(Math.round(value * 100)).padStart(3, "0");
+              nodes.readout.textContent = `${Math.round(value * 100)}%`;
             }
           },
           onComplete: () => {
@@ -192,7 +180,7 @@ export default function HeroSection() {
             latched.current = true;
           },
         },
-        PORTAL_FADE_END,
+        PORTAL_START,
       );
     }, section);
 
@@ -212,10 +200,10 @@ export default function HeroSection() {
         </div>
         <div className="px-5 pt-4 pb-12 sm:px-8 sm:pb-16">
           <h1 className="font-display pixel-dense text-[clamp(1.75rem,7vw,4rem)] leading-[0.9] text-zinc-900">
-            {NAME}
+            {siteContent.name}
           </h1>
           <ul className="mt-5 max-w-[42ch] space-y-1 text-sm leading-relaxed text-zinc-600">
-            {ROWS.filter((row) => row.text !== NAME).map((row) => (
+            {heroContent.rows.filter((row) => row.text !== siteContent.name).map((row) => (
               <li key={row.text}>{row.text}</li>
             ))}
           </ul>
@@ -255,7 +243,7 @@ export default function HeroSection() {
           aria-hidden
           className="pointer-events-none absolute inset-0 flex flex-col justify-center overflow-hidden"
         >
-          {ROWS.map((row, index) => (
+          {heroContent.rows.map((row, index) => (
             /*
               No overflow-hidden on the row. It used to be there to clip the marquee
               horizontally, but the full-bleed container above already clips to the
@@ -275,7 +263,7 @@ export default function HeroSection() {
                     {Array.from({ length: REPEATS }, (_, n) => (
                       <span
                         key={n}
-                        className={`font-display px-[0.18em] text-[clamp(2rem,24.8vh,20rem)] leading-[0.82] whitespace-nowrap ${row.density} ${row.tone}`}
+                        className={`font-display px-[0.18em] text-[clamp(2rem,24.8vh,20rem)] leading-[0.82] whitespace-nowrap ${row.dense ? "pixel-dense" : "pixel-light"} ${row.dense ? "text-zinc-900" : "text-zinc-900/45"}`}
                       >
                         {row.text}
                       </span>
@@ -304,7 +292,7 @@ export default function HeroSection() {
           the page's only h1 and it is what a screen reader, a search crawler and a
           link preview get.
         */}
-        <h1 className="sr-only">{NAME}</h1>
+        <h1 className="sr-only">{siteContent.name}</h1>
         </div>
       </section>
       {/*

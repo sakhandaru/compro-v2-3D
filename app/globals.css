@@ -22,6 +22,38 @@
   --font-mono: var(--font-geist-sans);
 }
 
+/*
+ * A real monospace stack, and it is not `--font-mono`.
+ *
+ * `--font-mono` deliberately points at Geist Sans, because every small caps label
+ * on this page is spaced type rather than code. That is the right call for those
+ * labels and the wrong one for the portal bar, which is drawn from the block
+ * characters U+2588 and U+2591.
+ *
+ * Those two glyphs only line up if both fill their advance width to the same
+ * degree, and in a proportional face there is no guarantee of that. In a monospace
+ * face both are the same width and the bar reads as a track of twenty equal cells,
+ * which is the whole point of it.
+ *
+ * System stacks, no webfont. The glyphs are present in Consolas, Menlo and
+ * SFMono, so this costs no download and cannot fall back to a face that lacks them.
+ */
+.bar-mono {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+}
+
+/*
+ * The panel the loading bar sits in. Its own background, so it does not depend on
+ * the WebGL scene behind it, and a hairline border in the same ink at a tenth of
+ * the bar's strength, which is enough to read as an edge and not enough to compete
+ * with the cells inside it.
+ */
+.portal-panel {
+  background: #1e1d24;
+  border: 1px solid rgba(239, 236, 226, 0.12);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -82,6 +114,89 @@ body {
 }
 
 /*
+ * The entrance: a CRT waking up.
+ *
+ * Two bars close on the middle of the screen and open vertically, each carrying a
+ * hairline of the screen's own colour on its inner edge. The colour is the terminal
+ * screen's, not pure black, so the moment before the hero appears is the same
+ * darkness the camera is about to fly into rather than an unrelated black.
+ *
+ * The keyframe holds closed for the first fifth, then opens on an accelerating
+ * curve. The hold is what makes it read as a machine waking rather than as a
+ * transition: something switches on before it opens. The acceleration is the CRT
+ * part, because the real thing does not ease in symmetrically, it snaps open and
+ * settles.
+ *
+ * It ends at zero height, not at opacity zero, and that is deliberate. Zero height
+ * means the page is genuinely revealed rather than merely uncovered, so a failed
+ * hydration or a late stylesheet leaves a visible site instead of a black
+ * rectangle. Nothing here depends on JavaScript running.
+ */
+/*
+ * No background on the wrapper, and that is load bearing rather than an oversight.
+ * With one, the shrinking bars revealed the wrapper's own black instead of the
+ * page, so the aperture opened onto nothing. Only the bars carry the colour.
+ *
+ * It also makes the failure case better rather than worse. If the stylesheet never
+ * arrives there is no black rectangle on top of the site, because the colour lives
+ * on the element that carries the animation and nowhere else.
+ */
+.entrance {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.entrance-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: #05050a;
+  animation: entrance-open 760ms both;
+}
+
+.entrance-bar-top {
+  top: 0;
+}
+
+.entrance-bar-bottom {
+  bottom: 0;
+}
+
+.entrance-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e8e4d8;
+}
+
+.entrance-bar-top .entrance-edge {
+  bottom: 0;
+}
+
+.entrance-bar-bottom .entrance-edge {
+  top: 0;
+}
+
+@keyframes entrance-open {
+  0% {
+    height: 50%;
+    animation-timing-function: linear;
+  }
+  20% {
+    height: 50%;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0.24, 1);
+  }
+  82%,
+  100% {
+    height: 0%;
+  }
+}
+
+/*
   Reduced motion is a hard stop, not a slower loop. A marquee that still drifts
   is still motion, and this one is large enough to be a problem.
 */
@@ -89,5 +204,15 @@ body {
   .marquee-track {
     animation: none;
     transform: none;
+  }
+
+  /*
+    The entrance collapses to nothing rather than playing fast. The component also
+    refuses to render under this query, so this is the second of two guards, and the
+    one that holds if the JavaScript never arrives.
+  */
+  .entrance-bar {
+    animation: none;
+    height: 0;
   }
 }

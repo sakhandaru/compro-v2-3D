@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import ProjectGallery from "@/components/project-gallery";
-import type { Project } from "@/components/projects";
+import { projectsContent, type Project } from "@/content/projects";
 
 /**
  * One row of the accordion, and the whole interaction model of 15.6 in one component.
@@ -120,9 +120,9 @@ export default function WorkRow({
                         href={link.href}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="font-mono text-[11px] uppercase tracking-wide text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+                        className="inline-block py-[0.875rem] font-mono text-[11px] uppercase tracking-wide text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
                       >
-                        {link.kind === "github" ? "source" : "live site"}
+                        {projectsContent.linkLabels[link.kind]}
                       </a>
                     </li>
                   ))}

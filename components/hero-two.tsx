@@ -1,5 +1,8 @@
 import Image from "next/image";
 
+import HeroGreeting from "@/components/hero-greeting";
+import { heroContent } from "@/content/hero";
+
 /**
  * The owner's photograph, from `public/HERO2.jpg`, treated rather than dropped in.
  *
@@ -27,9 +30,6 @@ import Image from "next/image";
  * Result sits at a mean luminance of 28. Dark, and the auditorium still has detail
  * in it rather than being a black rectangle with a face floating in it.
  */
-const PHOTO_SRC = "/photo/sakhandaru-bw.webp";
-const PHOTO_ALT =
-  "sakhandaru wearing a cum laude sash, sprawled across a row of theatre seats with his feet up, in an empty auditorium";
 
 /**
  * DESIGN..md 15.5 calls this the cooldown after the chaos, and specifies it as calm,
@@ -44,13 +44,36 @@ export default function HeroTwo() {
   return (
     <section className="relative min-h-screen bg-[#08080a]">
       <div className="relative min-h-screen w-full">
-        {PHOTO_SRC ? (
+        {heroContent.photo.src ? (
           <Image
-            src={PHOTO_SRC}
-            alt={PHOTO_ALT}
+            src={heroContent.photo.src}
+            alt={heroContent.photo.alt}
             fill
             priority={false}
-            className="object-cover object-[58%_50%]"
+            /*
+              Two focal points, and the deciding factor is the shape of the window
+              rather than its width.
+
+              The plate is 3840 by 2560. A landscape window is wider than the plate is
+              tall enough to be, so it crops vertically at most and shows the whole
+              width: `58%` centres the auditorium with the figure in the lower left.
+
+              A portrait window is the opposite. The image is scaled until its height
+              fills the box, and a 390 by 844 phone then shows only about 31% of the
+              width, a 768 by 1024 tablet about 50%. At `58%` the visible window sits
+              between 40% and 71% of the frame on a phone and starts at 29% on a
+              tablet, and the face is at roughly 29% of the frame. So the photograph
+              was showing a pair of legs and three rows of empty seats on a phone,
+              and half a face on a tablet.
+
+              A width breakpoint cannot express this, because the same width crops
+              very differently at different heights, so the variant is on orientation
+              instead. `30%` puts the face inside the narrow window in both portrait
+              shapes. The vertical value does nothing in portrait, because the scaled
+              height matches the box exactly and there is no vertical crop to
+              position against.
+            */
+            className="object-cover object-[58%_50%] [@media(orientation:portrait)]:object-[30%_50%]"
             sizes="100vw"
           />
         ) : (
@@ -59,27 +82,48 @@ export default function HeroTwo() {
             className="absolute inset-0 grid place-items-center bg-[#0e0e11]"
           >
             <p className="px-6 text-center font-mono text-[11px] leading-relaxed tracking-wide text-[#6f6d68]">
-              [FOTO HERO KEDUA — BELUM DISEDIAKAN]
+              {heroContent.photo.placeholder}
               <br />
-              Potret dramatis hitam putih, satu layar penuh.
             </p>
           </div>
         )}
 
         {/*
-          The scrim only exists to keep type off the photograph's highlights, and it
-          is bottom-weighted because that is where the type sits. Once the real
-          photograph lands this needs re-checking against the actual contrast, not
-          against the placeholder.
+          The scrim only exists to keep type off the photograph's highlights. It is
+          bottom weighted because that is where the type sits, and the top right
+          corner needed more than the `to-black/30` this gradient starts at, so the
+          scrim is two layers: the original gradient for the bottom statement, and a
+          soft corner wash for the greeting. Both measured against the plate, not
+          against a placeholder.
         */}
         <div
           aria-hidden
           className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30"
         />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(120%_80%_at_100%_0%,rgba(8,8,10,0.75),transparent_60%)]"
+        />
+
+        {/*
+          Two pieces of type in opposite corners rather than stacked in one block.
+          The photograph is the subject and it already has a figure lying across its
+          lower left, so putting the greeting under WELCOME would have run text over
+          a face. Diagonally opposed they frame the picture instead, and the eye
+          travels from the small situational line in the corner down to the word the
+          section is actually about.
+
+          The greeting is out of flow on purpose: its four variants differ in length,
+          and a corner that resized four times a day would be the one moving thing
+          on a page that is otherwise deliberately still.
+        */}
+        <div className="pointer-events-none absolute top-5 right-5 z-10 sm:top-8 sm:right-8">
+          <HeroGreeting />
+        </div>
 
         <div className="relative flex min-h-screen flex-col justify-end px-5 pb-14 sm:px-8 sm:pb-20">
-          <h2 className="font-display pixel-dense max-w-[16ch] text-[clamp(1.75rem,6.5vw,5rem)] leading-[0.92] text-[#f2efe7]">
-            [KALIMAT PEMBUKA]
+          <h2 className="font-display pixel-dense text-[clamp(2.5rem,9vw,7rem)] leading-[0.86] tracking-[-0.03em] text-[#f2efe7]">
+            {heroContent.headline}
           </h2>
         </div>
       </div>

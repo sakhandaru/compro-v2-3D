@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MilestoneList from "@/components/milestone-list";
-import { BRIDGE, INTRO, MILESTONES } from "@/components/milestones";
+import { timelineContent } from "@/content/timeline";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,8 +13,17 @@ gsap.registerPlugin(ScrollTrigger);
  */
 const TRACKS = 4;
 
-/** The text column. Cards and the readout both hang off its left edge. */
-const COLUMN = 1180;
+/**
+ * The page gutter. Cards and the readout both hang off it.
+ *
+ * There is no wider text column any more. Every section used to be
+ * `max-w-[1180px]` centred, which meant its content started at 130px on a 1440px
+ * screen while HERO 2, the act directly above it, started at the 32px gutter. The
+ * owner asked for the two to match and picked HERO 2 as the reference, which is
+ * the right way round: the Hero and HERO 2 are full bleed, so 32px is what this
+ * page already says its margin is, and four sections quietly disagreeing with the
+ * two acts that establish the frame is a seam, not a grid.
+ */
 const GUTTER = 32;
 
 /**
@@ -26,12 +35,29 @@ const GUTTER = 32;
  * middle of an otherwise empty screen. So the reading axis is now the left edge
  * of the text column, and the whole section reads down that one vertical line
  * from the card to the role and organisation underneath it.
- *
- * Measured, not guessed: the column is `max-w-[1180px]` centred with a 32px
- * gutter, so below 1180px the content simply starts at the gutter.
  */
 function readHead() {
-  return (Math.max(0, (window.innerWidth - COLUMN) / 2) + GUTTER) / window.innerWidth;
+  return GUTTER / window.innerWidth;
+}
+
+/**
+ * Whether there are enough milestones for the pinned journey to mean anything.
+ *
+ * The scrub hands each card an equal share of the scroll: card `i` reaches the
+ * reading line at `t = i / (n - 1)`. That is the whole geometry, and it needs `n - 1`
+ * to be non-zero.
+ *
+ * With one entry there is no such line, so the card is only ever on the reading line
+ * at the very first pixel of the pin and then leaves to the left, and the section
+ * becomes five hundred viewport heights of an empty ruler. Rather than special case
+ * the maths, one entry simply is not pinned: it takes the same vertical list a phone
+ * gets, which is the correct reading of a single milestone anyway.
+ *
+ * Two entries still pin. Each gets half the scroll and the middle of the pin has
+ * both cards in frame, receding, which is what the falloff is for.
+ */
+function plenty() {
+  return timelineContent.items.length > 1;
 }
 
 /**
@@ -90,10 +116,23 @@ const RUNWAY = 400;
  */
 function measure() {
   const read = readHead();
-  const step = (TRACKS - 1) / (TRACKS * (MILESTONES.length - 1));
+  /*
+   * One entry cannot be spaced, because `length - 1` is the number of gaps between
+   * them and with a single entry that is zero. Dividing by it produced Infinity,
+   * which put the one card at an infinite offset and parked it off screen: a
+   * timeline with a single milestone would have shown an empty section with a
+   * ruler moving on its own. A step of zero puts the lone card on the reading line,
+   * which is where it belongs.
+   *
+   * This is reachable, not theoretical. The list is data, and deleting entries down
+   * to one is an edit anyone can make in `content/timeline.ts` without opening this
+   * file.
+   */
+  const gaps = timelineContent.items.length - 1;
+  const step = gaps > 0 ? (TRACKS - 1) / (TRACKS * gaps) : 0;
   return {
     read,
-    positions: MILESTONES.map((_, i) => read / TRACKS + i * step),
+    positions: timelineContent.items.map((_, i) => read / TRACKS + i * step),
   };
 }
 
@@ -155,8 +194,7 @@ export default function Timeline() {
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const wide = window.matchMedia("(min-width: 1024px)");
-    const sync = () => setPinned(wide.matches && !motion.matches);
+    const wide = window.matchMedia("(min-width: 1024px)");    const sync = () => setPinned(wide.matches && !motion.matches && plenty());
     sync();
     motion.addEventListener("change", sync);
     wide.addEventListener("change", sync);
@@ -237,9 +275,9 @@ export default function Timeline() {
             element.style.zIndex = i === active ? "2" : "1";
           }
 
-          const current = MILESTONES[active]!;
+          const current = timelineContent.items[active]!;
           if (counter.current) {
-            counter.current.textContent = `${String(active + 1).padStart(2, "0")} / ${String(MILESTONES.length).padStart(2, "0")}`;
+            counter.current.textContent = `${String(active + 1).padStart(2, "0")} / ${String(timelineContent.items.length).padStart(2, "0")}`;
           }
           if (roleText.current) {
             roleText.current.textContent = (current.role || current.title).toUpperCase();
@@ -279,7 +317,7 @@ export default function Timeline() {
       id="timeline-heading"
       className="font-display pixel-dense text-[clamp(2rem,4.5vw,3.25rem)] leading-[0.95] tracking-[-0.03em] text-zinc-900"
     >
-      the journey
+      {timelineContent.heading}
     </h2>
   );
   const body = (
@@ -287,7 +325,8 @@ export default function Timeline() {
       <div className="flex items-end justify-between gap-6">
         {heading}
         <p className="hidden font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600 sm:block">
-          {MILESTONES.length} {MILESTONES.length === 1 ? "milestone" : "milestones"}
+          {timelineContent.items.length}{" "}
+          {timelineContent.countLabel}
         </p>
       </div>
     </>
@@ -303,9 +342,9 @@ export default function Timeline() {
   */
   const bridge = (
     <div className="bg-[#f7f6f2] px-5 py-[16vh] sm:px-8 sm:py-[20vh]">
-      <div className="mx-auto w-full max-w-[1180px]">
+      <div className="w-full">
         <p className="font-display pixel-dense text-[clamp(1.5rem,4.5vw,3rem)] leading-none tracking-[-0.02em] text-zinc-900">
-          {BRIDGE}
+          {timelineContent.bridge}
         </p>
       </div>
     </div>
@@ -319,7 +358,7 @@ export default function Timeline() {
           aria-labelledby="timeline-heading"
           className="relative bg-[#f7f6f2] px-5 py-[18vh] sm:px-8 sm:py-[22vh]"
         >
-          <div className="mx-auto w-full max-w-[1180px]">
+          <div className="w-full">
             {body}
             <div className="mt-12 sm:mt-16">
               <MilestoneList compact />
@@ -344,11 +383,25 @@ export default function Timeline() {
             One block of text, held to the left, and the whole middle of the
             screen left to the cards. That is where the section happens.
           */}
-          <div className="mx-auto w-full max-w-[1180px] px-8 pt-[10vh]">
-            <div className="max-w-[54ch]">
-              <div>{heading}</div>
-              <p className="mt-6 max-w-[46ch] text-[0.9375rem] leading-[1.6] text-zinc-700">
-                {INTRO}
+          <div className="w-full px-8 pt-[10vh]">
+            <div className="flex items-end justify-between gap-6">
+              <div className="max-w-[54ch]">
+                <div>{heading}</div>
+                <p className="mt-6 max-w-[46ch] text-[0.9375rem] leading-[1.6] text-zinc-700">
+                  {timelineContent.intro(timelineContent.items.length)}
+                </p>
+              </div>
+
+              {/*
+                The count, which belongs on desktop and was on the wrong branch for
+                a while. It lives in the non-pinned body, and the non-pinned body is
+                the mobile and reduced-motion one, so the comment above it claimed
+                desktop while the element only ever existed on a phone. The pinned
+                branch rendered `heading` on its own and skipped the count entirely.
+                Same element, same place in the row, now on both.
+              */}
+              <p className="hidden shrink-0 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600 sm:block">
+                {timelineContent.items.length} {timelineContent.countLabel}
               </p>
             </div>
           </div>
@@ -361,11 +414,11 @@ export default function Timeline() {
                 {
                   width: `${TRACKS * 100}%`,
                   "--inset": String(0.1125 / TRACKS),
-                  "--step": String((TRACKS - 1) / (TRACKS * (MILESTONES.length - 1))),
+                  "--step": String((TRACKS - 1) / (TRACKS * (timelineContent.items.length - 1))),
                 } as React.CSSProperties
               }
             >
-              {MILESTONES.map((milestone, i) => (
+              {timelineContent.items.map((milestone, i) => (
                 <div
                   key={i}
                   ref={register(i)}
@@ -426,20 +479,20 @@ export default function Timeline() {
               shows up once you line the two up.
             */}
             <div className="absolute inset-x-0 top-[72%] pb-[5vh]">
-              <div className="mx-auto flex w-full max-w-[1180px] items-end justify-between gap-8 px-8">
+              <div className="flex w-full items-end justify-between gap-8 px-8">
                 <div>
                   <p
                     ref={roleText}
                     className="font-mono text-[0.8125rem] uppercase tracking-[0.18em] text-zinc-900"
                   >
-                    {(MILESTONES[0]!.role || MILESTONES[0]!.title).toUpperCase()}
+                    {(timelineContent.items[0]!.role || timelineContent.items[0]!.title).toUpperCase()}
                   </p>
                   <p
                     ref={caption}
                     data-caption
                     className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600"
                   >
-                    {MILESTONES[0]!.org}
+                    {timelineContent.items[0]!.org}
                   </p>
                 </div>
                 {/*
@@ -456,7 +509,7 @@ export default function Timeline() {
                   data-counter
                   className="shrink-0 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600"
                 >
-                  01 / {String(MILESTONES.length).padStart(2, "0")}
+                  01 / {String(timelineContent.items.length).padStart(2, "0")}
                 </p>
               </div>
             </div>

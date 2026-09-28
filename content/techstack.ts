@@ -1,0 +1,26 @@
+export const techstackContent = {
+  label: undefined as string | undefined,
+
+  items: [
+    { name: "JavaScript", icon: "/techstack/javascript.svg" },
+    { name: "TypeScript", icon: "/techstack/typescript.svg" },
+    { name: "PHP", icon: "/techstack/php.svg" },
+    { name: "Python", icon: "/techstack/python.svg" },
+    { name: "React", icon: "/techstack/react.svg" },
+    { name: "Next.js", icon: "/techstack/nextjs.svg" },
+    { name: "Laravel", icon: "/techstack/laravel.svg" },
+    { name: "Node.js", icon: "/techstack/nodejs.svg" },
+    { name: "Flask", icon: "/techstack/flask.svg" },
+    { name: "MySQL", icon: "/techstack/mysql.svg" },
+    { name: "PostgreSQL", icon: "/techstack/postgresql.svg" },
+    { name: "MariaDB", icon: "/techstack/mariadb.svg" },
+    { name: "n8n", icon: "/techstack/n8n.svg" },
+    { name: "Docker", icon: "/techstack/docker.svg" },
+    { name: "Linux", icon: "/techstack/linux.svg" },
+    { name: "Git", icon: "/techstack/git.svg" },
+    { name: "Figma", icon: "/techstack/figma.svg" },
+    { name: "Notion", icon: "/techstack/notion.svg" },
+    { name: "Jira", icon: "/techstack/jira.svg" },
+    { name: "Trello", icon: "/techstack/trello.svg" },
+  ],
+} as const;

@@ -91,18 +91,45 @@ export const CAMERA_LAG = 1.7;
  * The fill gets the remaining 0.22, which is 150vh of scroll at the current runway.
  */
 export const PORTAL_START = 0.7;
-export const PORTAL_FADE_END = 0.78;
 
 /**
- * The loading surface. A horizontal web progress bar would undercut the whole
- * terminal, so the screen warms up instead: a dim raster sweeps down and a bright
- * scanline rides its edge. The raster is barely lighter than the screen, because a
- * CRT coming on does not get bright, it gets less black. Green is deliberately not
- * used; it would introduce a hue the rest of the page does not have.
+ * How quickly the portal itself appears once the camera has stopped. Short on
+ * purpose: the screen is already black and still by this point, so a slow fade just
+ * delays the bar becoming the thing the reader scrolls for.
  */
-export const RASTER_FILL = "#1e1d24";
-export const SCANLINE = "#e8e4d8";
+export const PORTAL_FADE = 0.04;
+
 export const PORTAL_INK = "#efece2";
+
+/**
+ * The progress bar, in the same ink as the terminal screen it sits on.
+ *
+ * Cells are characters rather than divs, because the whole point is that this reads
+ * as a terminal readout rather than as a web progress bar, and a grid of rounded
+ * rectangles would be exactly that. All the block glyphs were checked to be present
+ * in the families this page loads, so the bar cannot fall back to tofu boxes on
+ * another machine.
+ *
+ * Twenty cells, which is the width the owner drew. The count is fixed because a
+ * rounded number of filled cells is what makes the fill move in visible steps
+ * instead of shimmering by a fraction of a cell at a time.
+ */
+export const BAR_CELLS = 20;
+
+/**
+ * The empty part of the track. Dim rather than a different colour: the CRT is one
+ * ink, and a second hue here would introduce a colour the rest of the page has not
+ * earned.
+ */
+export const BAR_TRACK_INK = "rgba(239, 236, 226, 0.16)";
+
+/**
+ * The number under the bar. Dimmer than the lit cells so the bar stays the thing
+ * being watched, but still a readable grey rather than a hint: at the old value it
+ * measured under 2:1 against the raster, which is decoration pretending to be a
+ * readout.
+ */
+export const PORTAL_READOUT_INK = "#9a978f";
 
 /**
  * Breathing room around the model in the wide shot. The marquee is a full-bleed

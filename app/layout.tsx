@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Pixel } from "next/font/google";
 import "./globals.css";
+import { siteContent } from "@/content/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,15 +24,21 @@ const geistPixel = Geist_Pixel({
   adjustFontFallback: false,
 });
 
+/*
+ * From `content/site.ts`, like everything else. The description used to be a second
+ * copy of the hero's own words in this file, which is exactly the kind of duplication
+ * that goes stale: change a marquee row and the search result keeps claiming the old
+ * one. It is still a sentence in the content layer, but there is only one of it.
+ */
 export const metadata: Metadata = {
-  title: "sakhandaru",
-  description: "ui/ux designer. full-stack developer. delivering business value, architecting for scale.",
+  title: siteContent.title,
+  description: siteContent.description,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="id"
+      lang={siteContent.lang}
       className={`${geistSans.variable} ${geistPixel.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

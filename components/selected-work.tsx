@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import WorkRow from "@/components/work-row";
-import { PROJECTS } from "@/components/projects";
+import { projectsContent } from "@/content/projects";
 
 /**
  * DESIGN..md 15.6, as an accordion.
@@ -21,12 +21,12 @@ import { PROJECTS } from "@/components/projects";
  *
  * Opening is a click, not a scroll. Every project title is visible at once, so a
  * reader can see the whole set before committing to any of it, and can jump straight
- * to the eighth. A readout, which is what this replaced, only ever showed one project
+ * to the ninth. A readout, which is what this replaced, only ever showed one project
  * and lost the reader's place.
  *
  * The rows carry the index, the title and nothing else until opened. Every project
  * uses the same MacBook, so a collapsed row costs nothing by hiding its mockup, and
- * showing eight identical laptops at once would have been the card grid 17 rules out.
+ * showing nine identical laptops at once would have been the card grid 17 rules out.
  *
  * One row open at a time, because that is what the document's diagram shows.
  */
@@ -39,16 +39,16 @@ export default function SelectedWork() {
       aria-labelledby="work-heading"
       className="relative bg-[#f7f6f2] px-5 py-[18vh] sm:px-8 sm:py-[22vh]"
     >
-      <div className="mx-auto w-full max-w-[1180px]">
+      <div className="w-full">
         <h2
           id="work-heading"
           className="font-display pixel-dense max-w-[12ch] text-[clamp(2rem,7vw,5.5rem)] leading-[0.9] tracking-[-0.03em] text-zinc-900"
         >
-          selected work
+          {projectsContent.heading}
         </h2>
 
         <div className="mt-12 sm:mt-16">
-          {PROJECTS.map((project, i) => (
+          {projectsContent.items.map((project, i) => (
             <WorkRow
               key={project.slug}
               project={project}

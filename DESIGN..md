@@ -1205,8 +1205,30 @@ dari tepi kirinya, dan sumbu bacanya pindah ke tepi kiri kolom teks, bukan
 ke tengah viewport.
 
 Kartu, readout, dan heading sekarang berbagi satu garis vertikal. Terukur
-selaras **0px** di 1920, 1440, 1280, 1100, dan 1024, dan semuanya ikut turun
-ke gutter 32px begitu kolom tidak lagi muat.
+selaras **0px** di 1920, 1440, 1280, 1100, dan 1024, semuanya tepat di
+**gutter 32px**.
+
+### Kolom teks dihapus, gutter jadi satu-satunya margin
+
+Dulu setiap section dibungkus `max-w-[1180px]` yang dipusatkan. Di 1440px
+akibatnya konten mulai di **130px** dari tepi, sementara HERO 2 — act yang
+tepat di atasnya — mulai di **32px**. Pemilik melihat heading melompat ke
+kanan saat scroll dari HERO 2 ke Selected Work, lalu meminta tepi kiri dan
+kanannya disamakan dengan HERO 2.
+
+HERO 2 jadi acuan, bukan sebaliknya, karena Hero dan HERO 2 keduanya full
+bleed: 32px sudah menjadi margin yang ditetapkan halaman ini, dan empat
+section yang diam-diam berbeda dengan dua act yang membangun frame itu
+seam, bukan grid.
+
+Setelahnya `max-w-[1180px]` hilang dari empat section. Yang tersisa bukan
+kebetulan: `max-w-[ch]` pada blok paragraf, yang batasannya soal **panjang
+baris**, bukan soal **posisi tepi**. Teks About masih 537px di 1440px
+dan di 1920px, tidak ikut melebar.
+
+`readHead()` di Timeline ikut disederhanakan: `COLUMN` dihapus dan
+sumbu baca sekarang murni `GUTTER / innerWidth`. Delta 0px terukur ulang
+di 1920, 1440, 1280, 1100, 1024.
 
 Aktifnya entry dihitung dari jarak tepi kiri kartu ke sumbu itu, memakai
 geometri yang sama dengan yang menggeser track, jadi readout tidak pernah

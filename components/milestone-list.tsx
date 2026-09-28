@@ -1,4 +1,4 @@
-import { MILESTONES, type Milestone } from "@/components/milestones";
+import { timelineContent } from "@/content/timeline";
 
 /**
  * The vertical reading of the journey. Used below the breakpoint where the pinned
@@ -12,7 +12,7 @@ import { MILESTONES, type Milestone } from "@/components/milestones";
 export default function MilestoneList({ compact = false }: { compact?: boolean }) {
   return (
     <ol className="border-t border-zinc-300">
-      {MILESTONES.map((milestone: Milestone, i) => (
+      {timelineContent.items.map((milestone, i) => (
         <li key={i} className="border-b border-zinc-300">
           <div className={compact ? "py-5" : "py-7 sm:py-9"}>
             <div className="flex items-baseline gap-4 sm:gap-6">

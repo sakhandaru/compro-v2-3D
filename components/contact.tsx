@@ -1,13 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import {
-  CHANNELS,
-  CONTACT_BRIDGE,
-  CONTACT_HEADLINE,
-  EMAIL,
-  LOCATION,
-} from "@/components/contact-content";
+import { contactContent } from "@/content/contact";
 
 /**
  * DESIGN..md 15.10. The final act, and the footer, in one section because the
@@ -46,16 +40,16 @@ export default function Contact() {
       aria-labelledby="contact-heading"
       className="relative bg-[#f7f6f2] px-5 pt-[16vh] pb-10 sm:px-8 sm:pt-[20vh]"
     >
-      <div className="mx-auto w-full max-w-[1180px]">
+      <div className="w-full">
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
-          {CONTACT_BRIDGE}
+          {contactContent.bridge}
         </p>
 
         <h2
           id="contact-heading"
           className="font-display pixel-dense mt-10 text-[clamp(3rem,13vw,9rem)] leading-[0.86] tracking-[-0.04em] text-zinc-900"
         >
-          {CONTACT_HEADLINE.map((line) => (
+          {contactContent.headline.map((line) => (
             <span key={line} className="block">
               {line}
             </span>
@@ -79,7 +73,7 @@ export default function Contact() {
               <span key={copy} className="px-6">
                 {Array.from({ length: 6 }, (_, i) => (
                   <span key={i} className="px-6">
-                    {EMAIL}
+                    {contactContent.email}
                   </span>
                 ))}
               </span>
@@ -88,26 +82,40 @@ export default function Contact() {
         </div>
 
         <div className="mt-12 sm:mt-14">
-          <a
-            href={`mailto:${EMAIL}`}
-            className="font-mono text-[0.9375rem] tracking-[0.18em] text-zinc-900 uppercase underline decoration-zinc-300 underline-offset-[6px] transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
-          >
-            {EMAIL}
-          </a>
+          {/*
+            The two addresses a phone can act on, set on one line because they are
+            one idea: how to reach a person. The number is a `tel:` and not text,
+            so it is tappable on a device where the email above is not.
+          */}
+          <p className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+            <a
+              href={`mailto:${contactContent.email}`}
+              className="inline-block py-3 font-mono text-[0.9375rem] tracking-[0.18em] text-zinc-900 uppercase underline decoration-zinc-300 underline-offset-[6px] transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+            >
+              {contactContent.email}
+            </a>
+            <a
+              href={contactContent.phone.href}
+              className="inline-block py-3 font-mono text-[0.9375rem] tracking-[0.18em] text-zinc-900 uppercase underline decoration-zinc-300 underline-offset-[6px] transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+            >
+              {contactContent.phone.display}
+            </a>
+          </p>
 
           {/*
-            The rest of the ways in, from the owner's own data. Two, not five: a reader
-            wants to see the work and then find out who wrote it, and a row of five
-            identical social icons is a link list, not an invitation.
+            Everything else, from the owner's own data. A wrapping list of text
+            links rather than a row of icons: seven glyphs in a grid is the visual
+            noise 15.8 and 15.9 spent their whole length removing, and at 11 pixels
+            a monospace label is readable where an icon would only be guessable.
           */}
           <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
-            {CHANNELS.map((channel) => (
+            {contactContent.channels.map((channel) => (
               <li key={channel.href}>
                 <a
                   href={channel.href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600 underline decoration-zinc-300 underline-offset-4 transition-colors hover:text-zinc-900 hover:decoration-zinc-900 focus-visible:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+                  className="inline-block py-[0.9375rem] font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600 underline decoration-zinc-300 underline-offset-4 transition-colors hover:text-zinc-900 hover:decoration-zinc-900 focus-visible:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
                 >
                   {channel.label}
                 </a>
@@ -133,14 +141,14 @@ export default function Contact() {
             &copy; <time dateTime={String(new Date().getFullYear())}>{new Date().getFullYear()}</time>{" "}
             sakhandaru
             <span className="px-2 text-zinc-300">/</span>
-            {LOCATION}
+            {contactContent.location}
           </p>
           <button
             type="button"
             onClick={toTop}
-            className="cursor-pointer uppercase transition-colors hover:text-zinc-900 focus-visible:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+            className="-my-2 cursor-pointer px-1 py-[0.9375rem] uppercase transition-colors hover:text-zinc-900 focus-visible:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
           >
-            back to top
+            {contactContent.backToTop}
           </button>
         </footer>
       </div>

@@ -1,4 +1,6 @@
-import { ABOUT_BLOCKS, ABOUT_STATEMENT, CERTIFICATIONS, SKILLS } from "@/components/about-content";
+import { aboutContent } from "@/content/about";
+import { certificationsContent } from "@/content/certifications";
+import { techstackContent } from "@/content/techstack";
 
 /**
  * DESIGN..md 15.9. The calmest section on the page.
@@ -25,21 +27,29 @@ import { ABOUT_BLOCKS, ABOUT_STATEMENT, CERTIFICATIONS, SKILLS } from "@/compone
  * animation.
  */
 export default function About() {
+  /*
+    A certification logo is somebody else's brand mark, so a logo column is only
+    worth reserving when at least one entry actually has one. With none, the column
+    was a 44px empty gutter down the side of every row and read as a missing image
+    rather than as a deliberate absence.
+  */
+  const hasLogos = certificationsContent.items.some((cert) => Boolean(cert.logo));
+
   return (
     <section
       aria-labelledby="about-heading"
       className="relative bg-[#f7f6f2] px-5 py-[18vh] sm:px-8 sm:py-[22vh]"
     >
-      <div className="mx-auto w-full max-w-[1180px]">
+      <div className="w-full">
         <h2
           id="about-heading"
           className="font-display pixel-dense mt-10 max-w-[30ch] text-[clamp(1.5rem,3.2vw,2.5rem)] leading-[1.08] tracking-[-0.02em] text-zinc-900"
         >
-          {ABOUT_STATEMENT}
+          {aboutContent.statement}
         </h2>
 
         <div className="mt-[12vh]">
-          {ABOUT_BLOCKS.map((block, blockIndex) => (
+          {aboutContent.blocks.map((block, blockIndex) => (
             <div
               key={blockIndex}
               className={`grid gap-6 border-t border-zinc-300 py-10 sm:py-14 ${
@@ -116,39 +126,62 @@ export default function About() {
             read "React" twice. Inline SVG rather than <Image>, because these are
             24x24 vectors and a rasteriser has nothing to do.
           */}
-          {SKILLS.length > 0 ? (
-            <ul className="flex flex-wrap gap-x-6 gap-y-4 border-t border-zinc-300 py-10 sm:py-14">
-              {SKILLS.map((skill) => (
-                <li key={skill.name} className="flex items-center gap-2">
-                  {/*
-                    An img and not an inline svg. Inlining twenty marks would mean
-                    twenty copies of the path data in the bundle, and an external
-                    <use> only resolves against a sprite that has a fragment id,
-                    which these files do not have, so it would render nothing at all.
-                    The icons are 24x24 and about 4KB, so twenty requests is not a
-                    problem worth solving with a build step.
-                  */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={skill.icon} alt="" width={16} height={16} className="h-4 w-4 shrink-0" />
-                  <span className="text-[0.9375rem] leading-none text-zinc-900">
-                    {skill.name}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          {techstackContent.items.length > 0 ? (
+            <div className="border-t border-zinc-300 py-10 sm:py-14">
+              {/*
+                The label is optional and currently unset, because the list is
+                introduced by the rule above it and a third piece of small type in a
+                column that already has two was never needed. The slot exists so that
+                putting a string in `content/techstack.ts` is the whole change, and
+                the markup does not have to be revisited to receive it.
+              */}
+              {techstackContent.label ? (
+                <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+                  {techstackContent.label}
+                </p>
+              ) : null}
+
+              <ul className="flex flex-wrap gap-x-6 gap-y-4">
+                {techstackContent.items.map((skill) => (
+                  <li key={skill.name} className="flex items-center gap-2">
+                    {/*
+                      An img and not an inline svg. Inlining twenty marks would mean
+                      twenty copies of the path data in the bundle, and an external
+                      <use> only resolves against a sprite that has a fragment id,
+                      which these files do not have, so it would render nothing at
+                      all. The icons are 24x24 and about 4KB, so twenty requests is not
+                      a problem worth solving with a build step.
+                    */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={skill.icon}
+                      alt=""
+                      width={16}
+                      height={16}
+                      className="h-4 w-4 shrink-0"
+                    />
+                    <span className="text-[0.9375rem] leading-none text-zinc-900">
+                      {skill.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : null}
 
-          {CERTIFICATIONS.length > 0 ? (
+          {certificationsContent.items.length > 0 ? (
             <div className="grid gap-6 border-t border-zinc-300 py-10 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:gap-10 sm:py-14">
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
-                certifications
+                {certificationsContent.label}
               </p>
 
               <ul className="max-w-[58ch]">
-                {CERTIFICATIONS.map((cert) => (
+                {certificationsContent.items.map((cert) => (
                   <li
                     key={cert.name}
-                    className="grid grid-cols-[2.75rem_minmax(0,1fr)] items-center gap-5 border-b border-zinc-200 py-4 first:border-t first:border-zinc-200 last:border-b-0"
+                    className={`grid items-center gap-5 border-b border-zinc-200 py-4 first:border-t first:border-zinc-200 last:border-b-0 ${
+                      hasLogos ? "grid-cols-[2.75rem_minmax(0,1fr)]" : ""
+                    }`}
                   >
                     {cert.logo ? (
                       /*
@@ -159,9 +192,7 @@ export default function About() {
                       */
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={cert.logo} alt="" className="h-11 w-11 object-contain" />
-                    ) : (
-                      <span aria-hidden className="block h-11 w-11" />
-                    )}
+                    ) : null}
 
                     <div>
                       <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-900">
