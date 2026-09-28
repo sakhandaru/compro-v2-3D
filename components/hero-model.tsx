@@ -37,6 +37,20 @@ export type TerminalHandle = {
   screenHalfWidth: number;
   /** bounding radius of the whole model, used for the wide framing */
   radius: number;
+  /**
+    The plate's silhouette in viewport pixels, projected from the live mesh.
+
+    Live rather than measured once: the unit leans towards the cursor, so a
+    rectangle sampled at load would be pointing somewhere the screen no longer
+    is by the time the entrance tries to land the black on it. Eight corners of
+    the plate's own bounding box, through the world matrix, through the camera —
+    the silhouette is correct whichever way the body has turned.
+  */
+  projectScreen: (
+    camera: THREE.Camera,
+    width: number,
+    height: number,
+  ) => { x: number; y: number; w: number; h: number } | null;
 };
 
 /**
@@ -134,12 +148,43 @@ export default function HeroModel({
     const screenBox = new THREE.Box3().setFromObject(screen);
     const size = box.getSize(new THREE.Vector3());
     const screenSize = screenBox.getSize(new THREE.Vector3());
+    if (!screen.geometry.boundingBox) screen.geometry.computeBoundingBox();
+
+    const corner = new THREE.Vector3();
 
     onReady({
       screenCenter: screenBox.getCenter(new THREE.Vector3()),
       screenHalfHeight: screenSize.y / 2,
       screenHalfWidth: screenSize.x / 2,
       radius: Math.hypot(size.x, size.y, size.z) / 2,
+      projectScreen(camera, width, height) {
+        const local = screen.geometry.boundingBox;
+        if (!local || width <= 0 || height <= 0) return null;
+
+        let minX = Infinity;
+        let minY = Infinity;
+        let maxX = -Infinity;
+        let maxY = -Infinity;
+        for (let i = 0; i < 8; i++) {
+          corner.set(
+            i & 1 ? local.max.x : local.min.x,
+            i & 2 ? local.max.y : local.min.y,
+            i & 4 ? local.max.z : local.min.z,
+          );
+          corner.applyMatrix4(screen.matrixWorld).project(camera);
+          if (corner.x < minX) minX = corner.x;
+          if (corner.x > maxX) maxX = corner.x;
+          if (corner.y < minY) minY = corner.y;
+          if (corner.y > maxY) maxY = corner.y;
+        }
+
+        return {
+          x: ((minX + 1) / 2) * width,
+          y: ((1 - maxY) / 2) * height,
+          w: ((maxX - minX) / 2) * width,
+          h: ((maxY - minY) / 2) * height,
+        };
+      },
     });
   }, [scene, onReady]);
 

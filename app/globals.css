@@ -114,32 +114,38 @@ body {
 }
 
 /*
- * The entrance: a CRT waking up.
+ * The entrance: the computer's own black screen, held while its insides finish
+ * rendering, and then drawn into the screen plate itself.
  *
- * Two bars close on the middle of the screen and open vertically, each carrying a
- * hairline of the screen's own colour on its inner edge. The colour is the terminal
- * screen's, not pure black, so the moment before the hero appears is the same
- * darkness the camera is about to fly into rather than an unrelated black.
+ * `#05050a` is not a neutral black chosen for this overlay — it is SCREEN_COLOR,
+ * the value the 3D screen plate is painted. The first frame of the site is
+ * therefore the terminal's screen, and the last frame of the entrance is that
+ * same black sitting exactly on the plate before it lets go of it.
  *
- * The keyframe holds closed for the first fifth, then opens on an accelerating
- * curve. The hold is what makes it read as a machine waking rather than as a
- * transition: something switches on before it opens. The acceleration is the CRT
- * part, because the real thing does not ease in symmetrically, it snaps open and
- * settles.
+ * The stylesheet owns two things and only two: the hold, and the fade.
  *
- * It ends at zero height, not at opacity zero, and that is deliberate. Zero height
- * means the page is genuinely revealed rather than merely uncovered, so a failed
- * hydration or a late stylesheet leaves a visible site instead of a black
- * rectangle. Nothing here depends on JavaScript running.
- */
-/*
- * No background on the wrapper, and that is load bearing rather than an oversight.
- * With one, the shrinking bars revealed the wrapper's own black instead of the
- * page, so the aperture opened onto nothing. Only the bars carry the colour.
+ *   - The hold is `entrance-failsafe`, a five-second version that runs until the
+ *     component says otherwise, so a page whose JavaScript never arrives still
+ *     uncovers itself.
+ *   - The fade is `entrance-lift`, opacity only: full black through the first
+ *     85%, then dissolving. The collapse onto the plate is not here, because a
+ *     keyframe can only land on a target that never moves and this one leans
+ *     with the cursor. That half is written frame by frame by the component,
+ *     chasing the rectangle the render loop publishes each frame.
  *
- * It also makes the failure case better rather than worse. If the stylesheet never
- * arrives there is no black rectangle on top of the site, because the colour lives
- * on the element that carries the animation and nowhere else.
+ * ## The failure direction is the whole design
+ *
+ * The veil's base opacity is 0. The keyframes are what make it black, and what
+ * make it stop being black. A stylesheet that never arrives, keyframes that are
+ * not supported, hydration that never runs: in every one of those cases the
+ * reader sees the site, because there is no rule that turns the veil on outside
+ * the animation. The colour lives on the element that carries the animation and
+ * nowhere else.
+ *
+ * The collapse is the same shape of safety one level down: it is inline style
+ * written by JavaScript, so a model that fails to load means no rectangle to
+ * chase means no collapse at all — the full-screen fade plays and nothing is
+ * left stuck over the middle of the page.
  */
 .entrance {
   position: fixed;
@@ -148,51 +154,45 @@ body {
   pointer-events: none;
 }
 
-.entrance-bar {
+.entrance-veil {
   position: absolute;
-  left: 0;
-  right: 0;
-  height: 50%;
+  inset: 0;
   background: #05050a;
-  animation: entrance-open 760ms both;
+  opacity: 0;
+  animation: entrance-failsafe 5000ms both;
 }
 
-.entrance-bar-top {
-  top: 0;
+html.entrance-go .entrance-veil {
+  animation: entrance-lift 2000ms both;
 }
 
-.entrance-bar-bottom {
-  bottom: 0;
-}
-
-.entrance-edge {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e8e4d8;
-}
-
-.entrance-bar-top .entrance-edge {
-  bottom: 0;
-}
-
-.entrance-bar-bottom .entrance-edge {
-  top: 0;
-}
-
-@keyframes entrance-open {
-  0% {
-    height: 50%;
-    animation-timing-function: linear;
+@keyframes entrance-failsafe {
+  0%,
+  72% {
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1);
   }
-  20% {
-    height: 50%;
-    animation-timing-function: cubic-bezier(0.32, 0.72, 0.24, 1);
-  }
-  82%,
   100% {
-    height: 0%;
+    opacity: 0;
+  }
+}
+
+/*
+  Hold, then let go — and hold almost to the end. The collapse runs for 88% of
+  the lift and the black stays fully opaque for 85% of it, so the reader watches
+  the whole thing happen at full strength: onto the screen, then past it, down to
+  a dot inside the screen. Fading early is what made it look like the black
+  simply vanished; the only thing that fades here is the dot, once it has
+  stopped moving.
+*/
+@keyframes entrance-lift {
+  0%,
+  85% {
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  100% {
+    opacity: 0;
   }
 }
 
@@ -207,12 +207,15 @@ body {
   }
 
   /*
-    The entrance collapses to nothing rather than playing fast. The component also
-    refuses to render under this query, so this is the second of two guards, and the
-    one that holds if the JavaScript never arrives.
+    The entrance does not play faster, it does not play. The veil stays at its
+    base opacity of 0, and the selector is repeated at the same specificity as
+    the one above so this guard wins the cascade instead of losing it. The
+    component also refuses to render under this query, so this is the second of
+    two guards, and the one that holds if the JavaScript never arrives.
   */
-  .entrance-bar {
+  .entrance-veil,
+  html.entrance-go .entrance-veil {
     animation: none;
-    height: 0;
+    opacity: 0;
   }
 }

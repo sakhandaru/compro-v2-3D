@@ -6,6 +6,8 @@ import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer, useProgress } from "@react-three/drei";
 import HeroModel, { type TerminalHandle } from "@/components/hero-model";
+import { markSceneReady } from "@/components/scene-ready";
+import { writeScreenRect } from "@/components/screen-rect";
 import { heroContent } from "@/content/hero";
 import {
   AMBIENT_INTENSITY,
@@ -93,6 +95,8 @@ function Rig({
 }) {
   const camera = useThree((state) => state.camera);
   const aspect = useThree((state) => state.size.width / state.size.height);
+  /** CSS pixels of the canvas, which is what a viewport rectangle is quoted in */
+  const viewport = useThree((state) => state.size);
   const pointer = useThree((state) => state.pointer);
   const position = useRef(new THREE.Vector3());
   const scratch = useRef(new THREE.Vector3());
@@ -166,6 +170,15 @@ function Rig({
     // centre sits below the screen because of the keyboard deck, so aiming there
     // tilted the terminal up and broke the front-on read.
     camera.lookAt(scratch.current.copy(handle.screenCenter));
+
+    /*
+      Publish where the plate is on screen, last thing in the frame, so the
+      entrance can collapse the black into it. Written every frame rather than
+      measured on demand because the body leans with the cursor: a rectangle
+      sampled once would be stale by the time it is read.
+    */
+    const projected = handle.projectScreen(camera, viewport.width, viewport.height);
+    if (projected) writeScreenRect(projected.x, projected.y, projected.w, projected.h);
   });
 
   return (
@@ -276,7 +289,14 @@ export default function HeroCanvas({
   return (
     <div className="absolute inset-0">
       <LoadBar />
-      <SceneBoundary onFail={() => setFailed(true)}>
+      <SceneBoundary
+        onFail={() => {
+          setFailed(true);
+          // A dead scene releases the entrance too. The reader should not hold a
+          // black screen for three and a half seconds to be shown this message.
+          markSceneReady();
+        }}
+      >
         <Canvas
           /*
             near and far are set here rather than derived per frame. On a narrow
@@ -302,7 +322,10 @@ export default function HeroCanvas({
             driver={driver}
             handle={handle}
             reduced={reduced}
-            onReady={(next) => setHandle((previous) => previous ?? next)}
+            onReady={(next) => {
+              setHandle((previous) => previous ?? next);
+              markSceneReady();
+            }}
           />
         </Canvas>
       </SceneBoundary>

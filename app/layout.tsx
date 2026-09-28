@@ -31,8 +31,35 @@ const geistPixel = Geist_Pixel({
  * one. It is still a sentence in the content layer, but there is only one of it.
  */
 export const metadata: Metadata = {
+  metadataBase: new URL(siteContent.url),
   title: siteContent.title,
   description: siteContent.description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: siteContent.name,
+    title: siteContent.title,
+    description: siteContent.description,
+    locale: "en_US",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "sakhandaru, ui/ux designer and full-stack developer, in pixel type on a black terminal screen",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteContent.title,
+    description: siteContent.description,
+    images: ["/opengraph-image.png"],
+  },
+  robots: { index: true, follow: true },
+  authors: [{ name: siteContent.name }],
+  category: "portfolio",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
