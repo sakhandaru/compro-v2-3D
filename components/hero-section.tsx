@@ -5,8 +5,7 @@ import dynamic from "next/dynamic";
 import HeroTwo from "@/components/hero-two";
 import SelectedWork from "@/components/selected-work";
 import Timeline from "@/components/timeline";
-import About from "@/components/about";
-import Contact from "@/components/contact";
+import AboutContactSection from "@/components/about-contact-section";
 import PortalLoader, { type PortalHandle } from "@/components/portal-loader";
 import { heroContent } from "@/content/hero";
 import { siteContent } from "@/content/site";
@@ -199,8 +198,7 @@ export default function HeroSection() {
         <HeroTwo />
         <SelectedWork />
         <Timeline />
-        <About />
-        <Contact />
+        <AboutContactSection />
       </>
     );
   }
@@ -293,8 +291,8 @@ export default function HeroSection() {
       <HeroTwo />
       <SelectedWork />
       <Timeline />
-      <About />
-      <Contact />
+      <AboutContactSection />
     </>
   );
 }
+

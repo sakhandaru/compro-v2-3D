@@ -1,5 +1,6 @@
 import Entrance from "@/components/entrance";
 import HeroSection from "@/components/hero-section";
+import SmoothScroll from "@/components/smooth-scroll";
 import { contactContent } from "@/content/contact";
 import { siteContent } from "@/content/site";
 
@@ -40,7 +41,7 @@ const jsonLd = {
 
 export default function Home() {
   return (
-    <>
+    <SmoothScroll>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -53,6 +54,7 @@ export default function Home() {
       <main>
         <HeroSection />
       </main>
-    </>
+    </SmoothScroll>
   );
 }
+

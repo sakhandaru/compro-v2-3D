@@ -1,3 +1,6 @@
+"use client";
+
+import ScrollReveal from "@/components/scroll-reveal";
 import { aboutContent } from "@/content/about";
 import { certificationsContent } from "@/content/certifications";
 import { techstackContent } from "@/content/techstack";
@@ -139,13 +142,15 @@ export default function About() {
       className="relative section-rule bg-[#f7f6f2] px-5 sm:px-8 section-y"
     >
       <div className="w-full">
-        <p className="font-mono eyebrow text-zinc-600">~/about</p>
-        <h2
-          id="about-heading"
-          className="font-display pixel-dense display-lg mt-6 max-w-[26ch] text-zinc-900"
-        >
-          {aboutContent.statement}
-        </h2>
+        <ScrollReveal y={24} duration={0.8}>
+          <p className="font-mono eyebrow text-zinc-600">~/about</p>
+          <h2
+            id="about-heading"
+            className="font-display pixel-dense display-lg mt-6 max-w-[26ch] text-zinc-900"
+          >
+            {aboutContent.statement}
+          </h2>
+        </ScrollReveal>
 
         <div className="mt-12 grid gap-6 sm:mt-16">
           {/*
@@ -164,7 +169,7 @@ export default function About() {
             selebar isinya ke grid induk, dan tanpa min-w-0 kolom grid ikut
             melebar 699px di viewport 390px.
           */}
-          <div className="min-w-0">
+          <ScrollReveal y={28} duration={0.8} className="min-w-0">
             <div className="border-2 border-zinc-900 bg-zinc-900">
               <div className="flex items-center justify-between gap-4 border-b border-zinc-700 px-4 py-2.5 sm:px-5">
                 <p className="truncate font-mono eyebrow text-zinc-300">
@@ -228,16 +233,8 @@ export default function About() {
                 </code>
               </pre>
             </div>
-          </div>
+          </ScrollReveal>
 
-          {/*
-            Certifications, under the skills.
-
-            Gated on the array being non-empty rather than on a flag. An empty
-            array is the cleanest way to keep something off a page: there is no
-            hidden markup to trip over later, and no boolean to forget to flip back
-            when the real entries arrive.
-          */}
           {/*
             Skills sebagai schema explorer, bukan satu tabel panjang.
 
@@ -251,7 +248,7 @@ export default function About() {
             section ini tetap yang paling tenang.
           */}
           {tables.length > 0 ? (
-            <div className="min-w-0">
+            <ScrollReveal y={28} duration={0.8} className="min-w-0">
               {techstackContent.label ? (
                 <p className="mb-6 font-mono eyebrow text-zinc-600">
                   ~/{techstackContent.label}
@@ -372,11 +369,17 @@ export default function About() {
                   </p>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           ) : null}
 
           {certificationsContent.items.length > 0 ? (
-            <div className="grid gap-6 border-t border-zinc-300 py-10 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:gap-10 sm:py-12">
+            <ScrollReveal
+              y={24}
+              duration={0.8}
+              targetChildrenSelector="li"
+              stagger={0.08}
+              className="grid gap-6 border-t border-zinc-300 py-10 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:gap-10 sm:py-12"
+            >
               <p className="font-mono eyebrow text-zinc-600">
                 ~/{certificationsContent.label}
               </p>
@@ -416,10 +419,11 @@ export default function About() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </ScrollReveal>
           ) : null}
         </div>
       </div>
     </section>
   );
 }
+

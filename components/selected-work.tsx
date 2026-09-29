@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import WorkRow from "@/components/work-row";
+import ScrollReveal from "@/components/scroll-reveal";
 import { projectsContent } from "@/content/projects";
 
 /**
@@ -40,25 +41,35 @@ export default function SelectedWork() {
       className="relative section-rule bg-[#f7f6f2] px-5 sm:px-8 section-y"
     >
       <div className="w-full">
-        <p className="font-mono eyebrow text-zinc-600">~/selected-work</p>
-        <h2
-          id="work-heading"
-          className="font-display pixel-dense display-lg mt-6 max-w-[12ch] text-zinc-900"
-        >
-          {projectsContent.heading}
-        </h2>
+        <ScrollReveal y={24} duration={0.8}>
+          <p className="font-mono eyebrow text-zinc-600">~/selected-work</p>
+          <h2
+            id="work-heading"
+            className="font-display pixel-dense display-lg mt-6 max-w-[12ch] text-zinc-900"
+          >
+            {projectsContent.heading}
+          </h2>
+        </ScrollReveal>
 
-        <div className="mt-12 sm:mt-16">
+        <ScrollReveal
+          targetChildrenSelector="[data-work-row]"
+          stagger={0.06}
+          y={20}
+          duration={0.7}
+          className="mt-12 sm:mt-16"
+        >
           {projectsContent.items.map((project, i) => (
-            <WorkRow
-              key={project.slug}
-              project={project}
-              open={openIndex === i}
-              onToggle={() => setOpenIndex((current) => (current === i ? null : i))}
-            />
+            <div data-work-row key={project.slug}>
+              <WorkRow
+                project={project}
+                open={openIndex === i}
+                onToggle={() => setOpenIndex((current) => (current === i ? null : i))}
+              />
+            </div>
           ))}
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
 }
+

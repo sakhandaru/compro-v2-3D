@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MilestoneList from "@/components/milestone-list";
+import ScrollReveal from "@/components/scroll-reveal";
 import { timelineContent } from "@/content/timeline";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -341,7 +342,7 @@ export default function Timeline() {
         className="relative section-rule bg-[#f7f6f2] px-5 sm:px-8 section-y"
       >
         <div className="w-full">
-          {body}
+          <ScrollReveal y={24}>{body}</ScrollReveal>
           <div className="mt-12 sm:mt-16">
             <MilestoneList compact />
           </div>
@@ -362,7 +363,7 @@ export default function Timeline() {
             One block of text, held to the left, and the whole middle of the
             screen left to the cards. That is where the section happens.
           */}
-          <div className="w-full px-5 pt-[10vh] sm:px-8">
+          <ScrollReveal y={24} className="w-full px-5 pt-[10vh] sm:px-8">
             <p className="font-mono eyebrow text-zinc-600">~/the-record</p>
             <div className="mt-6 flex items-end justify-between gap-6">
               <div className="max-w-[54ch]">
@@ -384,7 +385,7 @@ export default function Timeline() {
                 {timelineContent.items.length} {timelineContent.countLabel}
               </p>
             </div>
-          </div>
+          </ScrollReveal>
 
           <div className="relative mt-[5vh] flex-1 overflow-hidden">
             <div
@@ -458,7 +459,7 @@ export default function Timeline() {
               put it 32px short of the heading, which is the sort of thing that only
               shows up once you line the two up.
             */}
-            <div className="absolute inset-x-0 top-[72%] pb-[5vh]">
+            <div className="absolute inset-x-0 top-[72%] pt-5 sm:pt-7 pb-[5vh]">
               <div className="flex w-full items-end justify-between gap-8 px-5 sm:px-8">
                 <div>
                   <p

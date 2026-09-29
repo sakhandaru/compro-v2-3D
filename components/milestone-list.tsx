@@ -1,3 +1,4 @@
+import ScrollReveal from "@/components/scroll-reveal";
 import { timelineContent } from "@/content/timeline";
 
 /**
@@ -11,7 +12,13 @@ import { timelineContent } from "@/content/timeline";
  */
 export default function MilestoneList({ compact = false }: { compact?: boolean }) {
   return (
-    <ol className="border-t border-zinc-300">
+    <ScrollReveal
+      as="ol"
+      targetChildrenSelector="li"
+      stagger={0.06}
+      y={20}
+      className="border-t border-zinc-300"
+    >
       {timelineContent.items.map((milestone, i) => (
         <li key={i} className="border-b border-zinc-300">
           <div className={compact ? "py-5" : "py-8 sm:py-10"}>
@@ -40,6 +47,7 @@ export default function MilestoneList({ compact = false }: { compact?: boolean }
           </div>
         </li>
       ))}
-    </ol>
+    </ScrollReveal>
   );
 }
+

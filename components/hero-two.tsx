@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 
 import HeroGreeting from "@/components/hero-greeting";
+import ScrollReveal from "@/components/scroll-reveal";
 import { heroContent } from "@/content/hero";
 
 /**
@@ -44,49 +47,51 @@ export default function HeroTwo() {
   return (
     <section className="relative min-h-screen bg-[#08080a]">
       <div className="relative min-h-screen w-full">
-        {heroContent.photo.src ? (
-          <Image
-            src={heroContent.photo.src}
-            alt={heroContent.photo.alt}
-            fill
-            priority={false}
-            /*
-              Two focal points, and the deciding factor is the shape of the window
-              rather than its width.
+        <ScrollReveal y={0} duration={1.1} ease="power2.out" className="absolute inset-0">
+          {heroContent.photo.src ? (
+            <Image
+              src={heroContent.photo.src}
+              alt={heroContent.photo.alt}
+              fill
+              priority={false}
+              /*
+                Two focal points, and the deciding factor is the shape of the window
+                rather than its width.
 
-              The plate is 3840 by 2560. A landscape window is wider than the plate is
-              tall enough to be, so it crops vertically at most and shows the whole
-              width: `58%` centres the auditorium with the figure in the lower left.
+                The plate is 3840 by 2560. A landscape window is wider than the plate is
+                tall enough to be, so it crops vertically at most and shows the whole
+                width: `58%` centres the auditorium with the figure in the lower left.
 
-              A portrait window is the opposite. The image is scaled until its height
-              fills the box, and a 390 by 844 phone then shows only about 31% of the
-              width, a 768 by 1024 tablet about 50%. At `58%` the visible window sits
-              between 40% and 71% of the frame on a phone and starts at 29% on a
-              tablet, and the face is at roughly 29% of the frame. So the photograph
-              was showing a pair of legs and three rows of empty seats on a phone,
-              and half a face on a tablet.
+                A portrait window is the opposite. The image is scaled until its height
+                fills the box, and a 390 by 844 phone then shows only about 31% of the
+                width, a 768 by 1024 tablet about 50%. At `58%` the visible window sits
+                between 40% and 71% of the frame on a phone and starts at 29% on a
+                tablet, and the face is at roughly 29% of the frame. So the photograph
+                was showing a pair of legs and three rows of empty seats on a phone,
+                and half a face on a tablet.
 
-              A width breakpoint cannot express this, because the same width crops
-              very differently at different heights, so the variant is on orientation
-              instead. `30%` puts the face inside the narrow window in both portrait
-              shapes. The vertical value does nothing in portrait, because the scaled
-              height matches the box exactly and there is no vertical crop to
-              position against.
-            */
-            className="object-cover object-[58%_50%] [@media(orientation:portrait)]:object-[30%_50%]"
-            sizes="100vw"
-          />
-        ) : (
-          <div
-            aria-hidden
-            className="absolute inset-0 grid place-items-center bg-[#0e0e11]"
-          >
-            <p className="px-6 text-center font-mono text-[11px] leading-relaxed text-[#6f6d68]">
-              {heroContent.photo.placeholder}
-              <br />
-            </p>
-          </div>
-        )}
+                A width breakpoint cannot express this, because the same width crops
+                very differently at different heights, so the variant is on orientation
+                instead. `30%` puts the face inside the narrow window in both portrait
+                shapes. The vertical value does nothing in portrait, because the scaled
+                height matches the box exactly and there is no vertical crop to
+                position against.
+              */
+              className="object-cover object-[58%_50%] [@media(orientation:portrait)]:object-[30%_50%]"
+              sizes="100vw"
+            />
+          ) : (
+            <div
+              aria-hidden
+              className="absolute inset-0 grid place-items-center bg-[#0e0e11]"
+            >
+              <p className="px-6 text-center font-mono text-[11px] leading-relaxed text-[#6f6d68]">
+                {heroContent.photo.placeholder}
+                <br />
+              </p>
+            </div>
+          )}
+        </ScrollReveal>
 
         {/*
           The scrim only exists to keep type off the photograph's highlights. It is
@@ -117,16 +122,24 @@ export default function HeroTwo() {
           and a corner that resized four times a day would be the one moving thing
           on a page that is otherwise deliberately still.
         */}
-        <div className="pointer-events-none absolute top-5 right-5 z-10 sm:top-8 sm:right-8">
+        <ScrollReveal
+          y={-14}
+          duration={0.75}
+          delay={0.15}
+          className="pointer-events-none absolute top-5 right-5 z-10 sm:top-8 sm:right-8"
+        >
           <HeroGreeting />
-        </div>
+        </ScrollReveal>
 
         <div className="relative flex min-h-screen flex-col justify-end px-5 pb-14 sm:px-8 sm:pb-20">
-          <h2 className="font-display pixel-dense display-xl text-[#f2efe7]">
-            {heroContent.headline}
-          </h2>
+          <ScrollReveal y={28} duration={0.85} ease="power3.out">
+            <h2 className="font-display pixel-dense display-xl text-[#f2efe7]">
+              {heroContent.headline}
+            </h2>
+          </ScrollReveal>
         </div>
       </div>
     </section>
   );
 }
+
