@@ -37,7 +37,7 @@ export default function SelectedWork() {
     <section
       id="selected-work"
       aria-labelledby="work-heading"
-      className="relative border-t border-zinc-300 bg-[#f7f6f2] px-5 sm:px-8 section-y"
+      className="relative section-rule bg-[#f7f6f2] px-5 sm:px-8 section-y"
     >
       <div className="w-full">
         <p className="font-mono eyebrow text-zinc-600">~/selected-work</p>

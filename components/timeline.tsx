@@ -338,7 +338,7 @@ export default function Timeline() {
       <section
         ref={section}
         aria-labelledby="timeline-heading"
-        className="relative border-t border-zinc-300 bg-[#f7f6f2] px-5 sm:px-8 section-y"
+        className="relative section-rule bg-[#f7f6f2] px-5 sm:px-8 section-y"
       >
         <div className="w-full">
           {body}
@@ -354,7 +354,7 @@ export default function Timeline() {
     <section
       ref={section}
       aria-labelledby="timeline-heading"
-      className="relative border-t border-zinc-300 bg-[#f7f6f2]"
+      className="relative section-rule bg-[#f7f6f2]"
       style={{ height: `${100 + RUNWAY}svh` }}
     >
         <div className="sticky top-0 flex h-dvh flex-col overflow-hidden">

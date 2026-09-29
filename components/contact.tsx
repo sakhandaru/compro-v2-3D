@@ -38,7 +38,7 @@ export default function Contact() {
   return (
     <section
       aria-labelledby="contact-heading"
-      className="relative border-t border-zinc-300 bg-[#f7f6f2] px-5 pb-10 sm:px-8 section-top"
+      className="relative section-rule bg-[#f7f6f2] px-5 pb-10 sm:px-8 section-top"
     >
       <div className="w-full">
         <p className="font-mono eyebrow text-zinc-600">

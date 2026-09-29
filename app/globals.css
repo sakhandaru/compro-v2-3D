@@ -119,13 +119,42 @@ body {
  * kapital paksa (uppercase/toUpperCase). Label dibedakan dari body hanya lewat
  * ukuran dan warna, bukan renggang atau kapital.
  * HeroTwo dikecualikan karena full-bleed image (min-h-screen milik foto).
+ *
+ * Mobile pakai rem, bukan vh: vh mengikat ritme ke tinggi layar, jadi di HP
+ * yang pendek section terlihat rapat, sementara di tablet	vh justru membuka
+ * rongga kosong yang lebih lebar dari desktop. 3rem (48px) memberi jarak antar
+ * section 97px: cukup untuk napas, tidak perlu menggulir melewati gurun
+ * kosong. sm (tablet) 11vh jadi tahap antara, karena lonjakan langsung dari
+ * 97px ke 339px di 640px membuat pita tengah terlihat melompong. Desktop
+ * 20vh, tidak berubah.
  */
 .section-y {
-  padding-block: 16vh;
+  padding-block: 3rem;
 }
 @media (min-width: 640px) {
   .section-y {
+    padding-block: 11vh;
+  }
+}
+@media (min-width: 1024px) {
+  .section-y {
     padding-block: 20vh;
+  }
+}
+
+/*
+ * Garis pemisah antar section. Di HP garisnya dihilang: setiap section sudah
+ * punya label ~/about sendiri dan jaraknya 97px, jadi garis cuma menambah satu
+ * lapis tinta yang membelah layar jadi dua tanpa menambah informasi. Di tablet
+ * ke atas ritme longgar dan garis kembali jadi penanda batas. Warnanya
+ * zinc-300, nilai yang sama dengan utility yang sebelumnya dipakai di markup.
+ */
+.section-rule {
+  border-top: 0;
+}
+@media (min-width: 640px) {
+  .section-rule {
+    border-top: 1px solid #d4d4d8;
   }
 }
 
@@ -136,9 +165,14 @@ body {
  * 16vh/20vh campur dengan 18vh/22vh).
  */
 .section-top {
-  padding-top: 16vh;
+  padding-top: 3rem;
 }
 @media (min-width: 640px) {
+  .section-top {
+    padding-top: 11vh;
+  }
+}
+@media (min-width: 1024px) {
   .section-top {
     padding-top: 20vh;
   }
