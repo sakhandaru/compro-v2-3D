@@ -102,36 +102,6 @@ export const PORTAL_FADE = 0.04;
 export const PORTAL_INK = "#efece2";
 
 /**
- * The progress bar, in the same ink as the terminal screen it sits on.
- *
- * Cells are characters rather than divs, because the whole point is that this reads
- * as a terminal readout rather than as a web progress bar, and a grid of rounded
- * rectangles would be exactly that. All the block glyphs were checked to be present
- * in the families this page loads, so the bar cannot fall back to tofu boxes on
- * another machine.
- *
- * Twenty cells, which is the width the owner drew. The count is fixed because a
- * rounded number of filled cells is what makes the fill move in visible steps
- * instead of shimmering by a fraction of a cell at a time.
- */
-export const BAR_CELLS = 20;
-
-/**
- * The empty part of the track. Dim rather than a different colour: the CRT is one
- * ink, and a second hue here would introduce a colour the rest of the page has not
- * earned.
- */
-export const BAR_TRACK_INK = "rgba(239, 236, 226, 0.16)";
-
-/**
- * The number under the bar. Dimmer than the lit cells so the bar stays the thing
- * being watched, but still a readable grey rather than a hint: at the old value it
- * measured under 2:1 against the raster, which is decoration pretending to be a
- * readout.
- */
-export const PORTAL_READOUT_INK = "#9a978f";
-
-/**
  * Breathing room around the model in the wide shot. The marquee is a full-bleed
  * field and the model sits on top of it, so this is purely about how much
  * presence the terminal has.

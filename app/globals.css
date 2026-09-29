@@ -41,17 +41,6 @@
     "Liberation Mono", monospace;
 }
 
-/*
- * The panel the loading bar sits in. Its own background, so it does not depend on
- * the WebGL scene behind it, and a hairline border in the same ink at a tenth of
- * the bar's strength, which is enough to read as an edge and not enough to compete
- * with the cells inside it.
- */
-.portal-panel {
-  background: #1e1d24;
-  border: 1px solid rgba(239, 236, 226, 0.12);
-}
-
 body {
   background: var(--background);
   color: var(--foreground);

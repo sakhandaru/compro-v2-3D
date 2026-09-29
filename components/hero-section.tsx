@@ -11,10 +11,7 @@ import PortalLoader, { type PortalHandle } from "@/components/portal-loader";
 import { heroContent } from "@/content/hero";
 import { siteContent } from "@/content/site";
 import {
-  BAR_CELLS,
-  BAR_TRACK_INK,
   PORTAL_FADE,
-  PORTAL_INK,
   PORTAL_START,
 } from "@/components/terminal-palette";
 import gsap from "gsap";
@@ -55,9 +52,14 @@ export default function HeroSection() {
   const [reduced, setReduced] = useState(false);
   const [durations, setDurations] = useState<string[]>([]);
   const [nodes, setNodes] = useState<PortalHandle>({
-    bar: null,
-    readout: null,
+    fill: null,
   });
+  /*
+    Dismissed once the load completes: the loader shows exactly once per page
+    load, never again on the way back up. Separate from the latch below, which
+    guards the fill value itself; this guards the overlay's existence.
+  */
+  const [dismissed, setDismissed] = useState(false);
   /*
     The latch. Once the fill has reached the end it stays there, so scrolling back up
     does not empty the screen and slam the portal shut on work the reader has already
@@ -149,35 +151,20 @@ export default function HeroSection() {
             const value = latched.current ? 1 : fill.value;
 
             /*
-              The bar. Two spans rather than one string, so the filled and empty
-              halves can carry different colours: a single `textContent` cannot be
-              half one ink and half another.
-
-              The cell count is rounded rather than floored, so the bar always shows
-              at least one lit cell from the very first pixel of the fill. A floor
-              leaves the reader scrolling an entirely dark bar and wondering whether
+              The fill, written as a width on the inner bar. Floored at two
+              percent once moving, so the very first pixel of scroll shows life:
+              a reader scrolling an entirely empty outline wonders whether
               anything is happening.
-
-              Two characters per cell is deliberately avoided. A half block at the
-              boundary would need a third colour to sit between the two inks, and
-              the eye reads that notch as a rendering fault rather than as progress.
             */
-            if (nodes.bar) {
-              const lit = Math.max(1, Math.round(value * BAR_CELLS));
-              const on = "\u2588".repeat(lit);
-              const off = "\u2591".repeat(BAR_CELLS - lit);
-              nodes.bar.innerHTML =
-                `<span style="color:${PORTAL_INK}">${on}</span>` +
-                `<span style="color:${BAR_TRACK_INK}">${off}</span>`;
-            }
-
-            if (nodes.readout) {
-              nodes.readout.textContent = `${Math.round(value * 100)}%`;
+            if (nodes.fill) {
+              const percent = value <= 0 ? 0 : Math.max(2, value * 100);
+              nodes.fill.style.width = `${percent.toFixed(1)}%`;
             }
           },
           onComplete: () => {
             if (latched.current) return;
             latched.current = true;
+            setDismissed(true);
           },
         },
         PORTAL_START,
@@ -285,7 +272,7 @@ export default function HeroSection() {
           that surface, so anything placed in a separate section would land on the
           warm page background instead of on black.
         */}
-        <PortalLoader onNodes={setNodes} />
+        <PortalLoader onNodes={setNodes} dismissed={dismissed} />
 
         {/*
           The field carries no headline, so the name is exposed here instead. It is
