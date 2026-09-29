@@ -47,14 +47,18 @@ export default function WorkRow({
             obvious from the reading order. The data still carries `index`, so putting
             it back is one element.
           */}
+          {/*
+            Status terbaca dari tinta: terbuka penuh, tertutup meredup.
+            zinc-500 di cream 4.47:1, di atas syarat 3:1 untuk teks besar ini.
+          */}
           <span
-            className={`font-display pixel-dense flex-1 text-[clamp(1.35rem,3.6vw,2.75rem)] leading-[0.95] tracking-[-0.02em] transition-colors ${open ? "text-zinc-900" : "text-zinc-800"}`}
+            className={`font-display pixel-dense display-statement flex-1 transition-colors ${open ? "text-zinc-900" : "text-zinc-500"}`}
           >
             {project.title}
           </span>
 
           <span
-            className={`font-mono text-[11px] tracking-wide transition-all duration-300 ${open ? "text-zinc-900" : "text-zinc-600 group-hover:text-zinc-900"}`}
+            className={`font-mono eyebrow transition-all duration-300 ${open ? "text-zinc-900" : "text-zinc-600 group-hover:text-zinc-900"}`}
           >
             {open ? "−" : "+"}
           </span>
@@ -66,12 +70,12 @@ export default function WorkRow({
         role="region"
         aria-label={project.title}
         data-open={open}
-        className={`grid transition-[grid-template-rows] duration-500 ease-out motion-reduce:transition-none ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+        className={`grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <div className="overflow-hidden">
-          <div className="grid gap-8 pb-12 sm:pb-16 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] md:items-start md:gap-10 lg:gap-12">
+          <div className="grid gap-8 pb-10 sm:pb-12 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] md:items-center md:gap-10 lg:gap-12">
             <div>
-              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 font-mono text-[11px] tracking-wide text-zinc-600">
+              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 font-mono eyebrow tabular-nums text-zinc-600">
                 <span>{project.year}</span>
                 <span>{project.role}</span>
                 {/*
@@ -92,7 +96,7 @@ export default function WorkRow({
                 </span>
               </div>
 
-              <p className="mt-5 max-w-[34ch] text-[clamp(0.95rem,1.1vw,1.0625rem)] leading-[1.5] text-zinc-700">
+              <p className="mt-5 max-w-[38ch] body-feature font-mono text-zinc-700">
                 {project.blurb}
               </p>
 
@@ -102,7 +106,7 @@ export default function WorkRow({
                 not brands but generic terms, so an icon for them would have to be
                 invented. The real brand marks are used on the skills list in About.
               */}
-              <p className="mt-6 font-mono text-[11px] leading-[1.9] tracking-wide text-zinc-600">
+              <p className="mt-6 font-mono eyebrow leading-[1.9] text-zinc-600">
                 {project.tech.join(" · ")}
               </p>
 
@@ -120,7 +124,7 @@ export default function WorkRow({
                         href={link.href}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="inline-block py-[0.875rem] font-mono text-[11px] uppercase tracking-wide text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+                        className="inline-block py-[0.875rem] font-mono eyebrow text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
                       >
                         {projectsContent.linkLabels[link.kind]}
                       </a>

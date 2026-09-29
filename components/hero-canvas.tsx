@@ -235,7 +235,7 @@ function LoadBar() {
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-20 px-4 pt-4">
-      <p className="font-mono text-[11px] tracking-wide text-zinc-600">
+      <p className="font-mono text-[11px] text-zinc-600">
         {errors.length > 0 ? heroContent.model.error : `${heroContent.model.loading} ${progress.toFixed(0)}%`}
       </p>
       <div className="mt-2 h-px w-full bg-zinc-300">
@@ -273,6 +273,27 @@ export default function HeroCanvas({
 }) {
   const [handle, setHandle] = useState<TerminalHandle | null>(null);
   const [failed, setFailed] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(true);
+
+  /*
+    The loop renders only while the hero is on screen. Past the pin the canvas
+    sits above the viewport burning frames nobody sees: a fullscreen transparent
+    WebGL layer compositing over five rows of animating type is the single most
+    expensive thing on this page, and pausing it when scrolled past costs
+    nothing visually. Resuming re-renders from the live driver value, so the
+    first frame back is already correct.
+  */
+  useEffect(() => {
+    const element = box.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry!.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   if (failed) {
     return (
@@ -287,7 +308,7 @@ export default function HeroCanvas({
   }
 
   return (
-    <div className="absolute inset-0">
+    <div ref={box} className="absolute inset-0">
       <LoadBar />
       <SceneBoundary
         onFail={() => {
@@ -298,6 +319,7 @@ export default function HeroCanvas({
         }}
       >
         <Canvas
+          frameloop={inView ? "always" : "never"}
           /*
             near and far are set here rather than derived per frame. On a narrow
             portrait viewport the horizontal fov collapses towards six degrees, which
@@ -310,9 +332,17 @@ export default function HeroCanvas({
             react-hooks/immutability rule rejects assigning to it from the frame loop.
           */
           camera={{ fov: FOV, near: 1, far: 20000, position: [700, 360, 430] }}
-          dpr={[1, 1.75]}
+          /*
+            DPR tops out at 1.5, not 1.75: past that the fill-rate cost of a
+            fullscreen alpha canvas over animating type buys sharpness nobody
+            can see on this model. high-performance asks for the discrete GPU
+            where one exists instead of melting the integrated one.
+          */
+          dpr={[1, 1.5]}
           gl={{
             alpha: true,
+            antialias: true,
+            powerPreference: "high-performance",
             toneMapping: THREE.NeutralToneMapping,
             toneMappingExposure: 1.15,
           }}

@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Pixel } from "next/font/google";
+import { Geist_Mono, Geist_Pixel } from "next/font/google";
 import "./globals.css";
 import { siteContent } from "@/content/site";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Geist Sans dicabut: tidak ada lagi teks sans di halaman ini (archived reason:
+// semua konten memakai Pixel atau Mono). Body jatuh ke stack sistem sebagai
+// pengaman terakhir, bukan sebagai suara desain.
+
+// Suara instrumen: label, meta, counter, path, readout. Peran ketiga setelah
+// Pixel (judul) dan Sans (prosa panjang). Sekeluarga dengan Sans, jadi tidak
+// menambah karakter asing ke halaman.
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -66,7 +73,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang={siteContent.lang}
-      className={`${geistSans.variable} ${geistPixel.variable} h-full antialiased`}
+      className={`${geistPixel.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

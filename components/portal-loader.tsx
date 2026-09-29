@@ -69,7 +69,7 @@ export default function PortalLoader({ onNodes }: { onNodes: (handle: PortalHand
           */}
           <div
             ref={readout}
-            className="bar-mono mt-4 text-[clamp(0.8125rem,2.6vw,1.375rem)] leading-none tracking-[0.08em]"
+            className="bar-mono mt-4 text-[clamp(0.8125rem,2.6vw,1.375rem)] leading-none"
             style={{ color: PORTAL_READOUT_INK }}
           >
             0%

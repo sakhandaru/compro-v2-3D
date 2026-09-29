@@ -199,10 +199,10 @@ export default function HeroSection() {
           <HeroCanvas driver={driver} reduced />
         </div>
         <div className="px-5 pt-4 pb-12 sm:px-8 sm:pb-16">
-          <h1 className="font-display pixel-dense text-[clamp(1.75rem,7vw,4rem)] leading-[0.9] text-zinc-900">
+          <h1 className="font-display pixel-dense display-lg text-zinc-900">
             {siteContent.name}
           </h1>
-          <ul className="mt-5 max-w-[42ch] space-y-1 text-sm leading-relaxed text-zinc-600">
+          <ul className="mt-5 max-w-[42ch] space-y-1 font-mono text-sm leading-relaxed text-zinc-600">
             {heroContent.rows.filter((row) => row.text !== siteContent.name).map((row) => (
               <li key={row.text}>{row.text}</li>
             ))}

@@ -280,7 +280,7 @@ export default function Timeline() {
             counter.current.textContent = `${String(active + 1).padStart(2, "0")} / ${String(timelineContent.items.length).padStart(2, "0")}`;
           }
           if (roleText.current) {
-            roleText.current.textContent = (current.role || current.title).toUpperCase();
+            roleText.current.textContent = current.role || current.title;
           }
           if (caption.current) {
             caption.current.textContent = [current.org, current.period].join(" · ");
@@ -315,16 +315,17 @@ export default function Timeline() {
   const heading = (
     <h2
       id="timeline-heading"
-      className="font-display pixel-dense text-[clamp(2rem,4.5vw,3.25rem)] leading-[0.95] tracking-[-0.03em] text-zinc-900"
+      className="font-display pixel-dense display-lg text-zinc-900"
     >
       {timelineContent.heading}
     </h2>
   );
   const body = (
     <>
-      <div className="flex items-end justify-between gap-6">
+      <p className="font-mono eyebrow text-zinc-600">~/the-record</p>
+      <div className="mt-6 flex items-end justify-between gap-6">
         {heading}
-        <p className="hidden font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600 sm:block">
+        <p className="hidden font-mono eyebrow text-zinc-600 sm:block">
           {timelineContent.items.length}{" "}
           {timelineContent.countLabel}
         </p>
@@ -332,62 +333,41 @@ export default function Timeline() {
     </>
   );
 
-  /*
-    15.8 asks for a bridge into About once the last milestone lands.
-
-    It sits after the section rather than pinned to the bottom of it. Inside, its
-    own background covered the lower 40% of the pinned view, so at full scroll the
-    final milestone lost its card, its ruler and its readout to a cream panel, which
-    is the one moment the whole section is built to deliver.
-  */
-  const bridge = (
-    <div className="bg-[#f7f6f2] px-5 py-[16vh] sm:px-8 sm:py-[20vh]">
-      <div className="w-full">
-        <p className="font-display pixel-dense text-[clamp(1.5rem,4.5vw,3rem)] leading-none tracking-[-0.02em] text-zinc-900">
-          {timelineContent.bridge}
-        </p>
-      </div>
-    </div>
-  );
-
   if (!pinned) {
     return (
-      <>
-        <section
-          ref={section}
-          aria-labelledby="timeline-heading"
-          className="relative bg-[#f7f6f2] px-5 py-[18vh] sm:px-8 sm:py-[22vh]"
-        >
-          <div className="w-full">
-            {body}
-            <div className="mt-12 sm:mt-16">
-              <MilestoneList compact />
-            </div>
+      <section
+        ref={section}
+        aria-labelledby="timeline-heading"
+        className="relative border-t border-zinc-300 bg-[#f7f6f2] px-5 sm:px-8 section-y"
+      >
+        <div className="w-full">
+          {body}
+          <div className="mt-12 sm:mt-16">
+            <MilestoneList compact />
           </div>
-        </section>
-        {bridge}
-      </>
+        </div>
+      </section>
     );
   }
 
   return (
-    <>
-      <section
-        ref={section}
-        aria-labelledby="timeline-heading"
-        className="relative bg-[#f7f6f2]"
-        style={{ height: `${100 + RUNWAY}svh` }}
-      >
+    <section
+      ref={section}
+      aria-labelledby="timeline-heading"
+      className="relative border-t border-zinc-300 bg-[#f7f6f2]"
+      style={{ height: `${100 + RUNWAY}svh` }}
+    >
         <div className="sticky top-0 flex h-dvh flex-col overflow-hidden">
           {/*
             One block of text, held to the left, and the whole middle of the
             screen left to the cards. That is where the section happens.
           */}
-          <div className="w-full px-8 pt-[10vh]">
-            <div className="flex items-end justify-between gap-6">
+          <div className="w-full px-5 pt-[10vh] sm:px-8">
+            <p className="font-mono eyebrow text-zinc-600">~/the-record</p>
+            <div className="mt-6 flex items-end justify-between gap-6">
               <div className="max-w-[54ch]">
                 <div>{heading}</div>
-                <p className="mt-6 max-w-[46ch] text-[0.9375rem] leading-[1.6] text-zinc-700">
+                <p className="mt-6 max-w-[46ch] mono-copy text-zinc-700">
                   {timelineContent.intro(timelineContent.items.length)}
                 </p>
               </div>
@@ -400,7 +380,7 @@ export default function Timeline() {
                 branch rendered `heading` on its own and skipped the count entirely.
                 Same element, same place in the row, now on both.
               */}
-              <p className="hidden shrink-0 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600 sm:block">
+              <p className="hidden shrink-0 font-mono eyebrow text-zinc-600 sm:block">
                 {timelineContent.items.length} {timelineContent.countLabel}
               </p>
             </div>
@@ -426,20 +406,20 @@ export default function Timeline() {
                   style={{ left: `calc((var(--inset) + ${i} * var(--step)) * 100%)` }}
                 >
                   <div className="flex items-baseline gap-3.5">
-                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+                    <p className="font-mono eyebrow text-zinc-600">
                       {String(i + 1).padStart(2, "0")}
                     </p>
-                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+                    <p className="font-mono eyebrow text-zinc-600">
                       {milestone.period}
                     </p>
                   </div>
-                  <h3 className="font-display pixel-dense mt-3 max-w-[16ch] text-[clamp(1.25rem,2.1vw,1.85rem)] leading-[1.02] tracking-[-0.02em] text-zinc-900">
+                  <h3 className="font-display pixel-dense display-md mt-3 max-w-[16ch] text-zinc-900">
                     {milestone.title}
                   </h3>
-                  <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+                  <p className="mt-2 font-mono eyebrow text-zinc-600">
                     {milestone.org}
                   </p>
-                  <p className="mt-3.5 max-w-[38ch] text-[0.9375rem] leading-[1.55] text-zinc-700">
+                  <p className="mt-3.5 max-w-[38ch] mono-copy text-zinc-700">
                     {milestone.line}
                   </p>
                 </div>
@@ -479,18 +459,18 @@ export default function Timeline() {
               shows up once you line the two up.
             */}
             <div className="absolute inset-x-0 top-[72%] pb-[5vh]">
-              <div className="flex w-full items-end justify-between gap-8 px-8">
+              <div className="flex w-full items-end justify-between gap-8 px-5 sm:px-8">
                 <div>
                   <p
                     ref={roleText}
-                    className="font-mono text-[0.8125rem] uppercase tracking-[0.18em] text-zinc-900"
+                    className="font-mono text-[0.8125rem] leading-[1.5] tabular-nums text-zinc-900"
                   >
-                    {(timelineContent.items[0]!.role || timelineContent.items[0]!.title).toUpperCase()}
+                    {timelineContent.items[0]!.role || timelineContent.items[0]!.title}
                   </p>
                   <p
                     ref={caption}
                     data-caption
-                    className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600"
+                    className="mt-2 font-mono eyebrow tabular-nums text-zinc-600"
                   >
                     {timelineContent.items[0]!.org}
                   </p>
@@ -507,7 +487,7 @@ export default function Timeline() {
                 <p
                   ref={counter}
                   data-counter
-                  className="shrink-0 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600"
+                  className="shrink-0 font-mono eyebrow tabular-nums text-zinc-600"
                 >
                   01 / {String(timelineContent.items.length).padStart(2, "0")}
                 </p>
@@ -516,7 +496,5 @@ export default function Timeline() {
           </div>
         </div>
       </section>
-      {bridge}
-    </>
-  );
+    );
 }

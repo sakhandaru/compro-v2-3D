@@ -3,28 +3,25 @@ import { certificationsContent } from "@/content/certifications";
 import { techstackContent } from "@/content/techstack";
 
 /**
- * DESIGN..md 15.9. The calmest section on the page.
+ * The calmest section on the page: one statement, then content sitting in
+ * sharp white cards rather than in bordered editorial rows.
  *
- * It answers "who is the person behind all this work", and 15.9 is blunt about
- * what that is not: not a second CV. So there is no skills array, no percentages,
- * no job list, no avatar. Those are all explicitly on the avoid list, and every
- * one of them is the thing a portfolio reaches for when it has nothing to say
- * about a person.
+ * It answers "who is the person behind all this work", and it is blunt about
+ * what that is not: not a second CV. So there is no skills array with
+ * percentages, no job list, no avatar. Those are all the thing a portfolio
+ * reaches for when it has nothing to say about a person.
  *
- * Composition is editorial and asymmetric rather than symmetrical: a narrow rail
- * on the left holding one small mono label, and a wide column beside it holding
- * the actual sentence. That rail is the same left axis the Timeline reads down,
- * so this section is the quiet continuation of the same line rather than a new
- * idea, and it is why there is no rule about "subtle grid" here: the structure
- * comes from the rail and from thin dividers between blocks, and adding a grid
- * pattern on top of that would be decoration, which R-07 rules out without a
- * reason.
+ * Cards, not rows: each block is a sharp white card on the cream, and the
+ * stack is a divider grid in the same card language. Retro to match the pixel
+ * voice: square corners everywhere, 2px ink borders, and exactly one hard
+ * offset shadow (on the stack, the showpiece). A hard shadow is not the soft
+ * float banned elsewhere on this page: it has no blur, no spread, it is print,
+ * not levitation. Radius is zero by decision.
  *
  * Nothing here moves. The Hero, the portal and the Timeline all move, and a
  * section that is meant to feel like the calmest thing on the page should not
- * compete with them for attention. MOTION is dial 2 on this page, and a static
- * editorial block is a legitimate break in the rhythm rather than a missing
- * animation.
+ * compete with them for attention. A static block is a legitimate break in the
+ * rhythm rather than a missing animation.
  */
 export default function About() {
   /*
@@ -38,31 +35,30 @@ export default function About() {
   return (
     <section
       aria-labelledby="about-heading"
-      className="relative bg-[#f7f6f2] px-5 py-[18vh] sm:px-8 sm:py-[22vh]"
+      className="relative border-t border-zinc-300 bg-[#f7f6f2] px-5 sm:px-8 section-y"
     >
       <div className="w-full">
+        <p className="font-mono eyebrow text-zinc-600">~/about</p>
         <h2
           id="about-heading"
-          className="font-display pixel-dense mt-10 max-w-[30ch] text-[clamp(1.5rem,3.2vw,2.5rem)] leading-[1.08] tracking-[-0.02em] text-zinc-900"
+          className="font-display pixel-dense display-lg mt-6 max-w-[26ch] text-zinc-900"
         >
           {aboutContent.statement}
         </h2>
 
-        <div className="mt-[12vh]">
+        <div className="mt-12 grid gap-6 sm:mt-16">
           {aboutContent.blocks.map((block, blockIndex) => (
             <div
               key={blockIndex}
-              className={`grid gap-6 border-t border-zinc-300 py-10 sm:py-14 ${
-                block.label ? "sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:gap-10" : ""
-              }`}
+              className="border-2 border-zinc-900 bg-white p-6 sm:p-10"
             >
               {block.label ? (
-                <div>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
-                    {block.label}
+                <div className="mb-6">
+                  <p className="font-mono eyebrow text-zinc-600">
+                    ~/{block.label}
                   </p>
                   {block.note ? (
-                    <p className="mt-2 max-w-[24ch] font-mono text-[11px] leading-[1.5] tracking-[0.18em] text-zinc-600">
+                    <p className="mt-2 max-w-[24ch] font-mono eyebrow text-zinc-600">
                       {block.note}
                     </p>
                   ) : null}
@@ -71,14 +67,14 @@ export default function About() {
 
               <div>
                 {block.heading ? (
-                  <h3 className="font-display pixel-dense max-w-[26ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-[1.1] tracking-[-0.02em] text-zinc-900">
+                  <h3 className="font-display pixel-dense display-md max-w-[26ch] text-zinc-900">
                     {block.heading}
                   </h3>
                 ) : null}
 
                 {block.body ? (
                   <p
-                    className={`max-w-[54ch] text-[0.9375rem] leading-[1.65] text-zinc-700 ${
+                    className={`max-w-[54ch] mono-copy text-zinc-700 ${
                       block.heading ? "mt-6" : ""
                     }`}
                   >
@@ -93,10 +89,10 @@ export default function About() {
                         key={item.term}
                         className="grid gap-1 border-b border-zinc-200 py-4 last:border-b-0 sm:grid-cols-[minmax(0,12rem)_minmax(0,1fr)] sm:gap-8"
                       >
-                        <dt className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-900">
+                        <dt className="font-mono eyebrow text-zinc-900">
                           {item.term}
                         </dt>
-                        <dd className="text-[0.9375rem] leading-[1.6] text-zinc-700">
+                        <dd className="mono-copy text-zinc-700">
                           {item.detail}
                         </dd>
                       </div>
@@ -126,41 +122,54 @@ export default function About() {
             read "React" twice. Inline SVG rather than <Image>, because these are
             24x24 vectors and a rasteriser has nothing to do.
           */}
+          {/*
+            Skills as a divider grid in the same card language: the grid's own
+            ink background shows through 2px gaps as dividers, matching the 2px
+            outer border, so twenty cells read as one instrument instead of twenty
+            loose items. Square corners, and the section's one hard shadow (8px
+            solid, no blur) sits here on the showpiece, nowhere else.
+          */}
           {techstackContent.items.length > 0 ? (
-            <div className="border-t border-zinc-300 py-10 sm:py-14">
-              {/*
-                The label is optional and currently unset, because the list is
-                introduced by the rule above it and a third piece of small type in a
-                column that already has two was never needed. The slot exists so that
-                putting a string in `content/techstack.ts` is the whole change, and
-                the markup does not have to be revisited to receive it.
-              */}
+            <div>
               {techstackContent.label ? (
-                <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
-                  {techstackContent.label}
+                <p className="mb-6 font-mono eyebrow text-zinc-600">
+                  ~/{techstackContent.label}
                 </p>
               ) : null}
 
-              <ul className="flex flex-wrap gap-x-6 gap-y-4">
+              <ul className="grid grid-cols-2 gap-[2px] border-2 border-zinc-900 bg-zinc-900 shadow-[8px_8px_0_#18181b] sm:grid-cols-3 lg:grid-cols-4">
                 {techstackContent.items.map((skill) => (
-                  <li key={skill.name} className="flex items-center gap-2">
+                  <li key={skill.name} className="flex items-center gap-3 bg-white p-5">
                     {/*
-                      An img and not an inline svg. Inlining twenty marks would mean
-                      twenty copies of the path data in the bundle, and an external
-                      <use> only resolves against a sprite that has a fragment id,
-                      which these files do not have, so it would render nothing at
-                      all. The icons are 24x24 and about 4KB, so twenty requests is not
-                      a problem worth solving with a build step.
+                      Ikon sebagai topeng, bukan gambar: SVG dipakai sebagai
+                      mask-image dan warnanya tinta teks (zinc-900, sama dengan
+                      nama di sebelahnya). Grayscale bukan jawabannya, karena
+                      ikon brand yang di-gray tetap belang terang-gelap mengikuti
+                      luminansi aslinya; topeng memberi satu warna tinta yang
+                      sama persis dengan font, yang diminta owner.
+
+                      Span dan bukan img: mask tidak bisa diterapkan lewat tag
+                      img. aria-hidden karena nama sudah ada sebagai teks di
+                      sebelahnya. Bukan inline svg: dua puluh salinan path data
+                      di bundle lebih mahal dari dua puluh request 4KB, dan
+                      <use> eksternal butuh sprite ber-fragment-id yang file-file
+                      ini tidak punya.
                     */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={skill.icon}
-                      alt=""
-                      width={16}
-                      height={16}
-                      className="h-4 w-4 shrink-0"
+                    <span
+                      aria-hidden
+                      style={{
+                        WebkitMaskImage: `url(${skill.icon})`,
+                        maskImage: `url(${skill.icon})`,
+                        WebkitMaskSize: "contain",
+                        maskSize: "contain",
+                        WebkitMaskRepeat: "no-repeat",
+                        maskRepeat: "no-repeat",
+                        WebkitMaskPosition: "center",
+                        maskPosition: "center",
+                      }}
+                      className="h-4 w-4 shrink-0 bg-zinc-900"
                     />
-                    <span className="text-[0.9375rem] leading-none text-zinc-900">
+                    <span className="mono-copy leading-none text-zinc-900">
                       {skill.name}
                     </span>
                   </li>
@@ -170,9 +179,9 @@ export default function About() {
           ) : null}
 
           {certificationsContent.items.length > 0 ? (
-            <div className="grid gap-6 border-t border-zinc-300 py-10 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:gap-10 sm:py-14">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
-                {certificationsContent.label}
+            <div className="grid gap-6 border-t border-zinc-300 py-10 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:gap-10 sm:py-12">
+              <p className="font-mono eyebrow text-zinc-600">
+                ~/{certificationsContent.label}
               </p>
 
               <ul className="max-w-[58ch]">
@@ -195,14 +204,14 @@ export default function About() {
                     ) : null}
 
                     <div>
-                      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-900">
+                      <p className="font-mono eyebrow text-zinc-900">
                         {cert.name}
                       </p>
-                      <p className="mt-1.5 text-[0.9375rem] leading-[1.5] text-zinc-700">
+                      <p className="mt-1.5 mono-copy leading-[1.5] text-zinc-700">
                         {[cert.issuer, cert.year].filter(Boolean).join(" \u00b7 ")}
                       </p>
                       {cert.credentialId ? (
-                        <p className="mt-1 font-mono text-[11px] tracking-[0.18em] text-zinc-600">
+                        <p className="mt-1 font-mono eyebrow text-zinc-600">
                           ID {cert.credentialId}
                         </p>
                       ) : null}

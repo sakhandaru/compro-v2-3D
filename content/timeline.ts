@@ -1,6 +1,5 @@
 export const timelineContent = {
   heading: "the record",
-  bridge: "still building.",
   countLabel: "milestones",
 
   intro: (n: number) =>

@@ -10,7 +10,7 @@ export const heroContent = {
   ],
 
   photo: {
-    src: "/photo/sakhandaru-bw.webp",
+    src: "/photo/HERO2.webp",
     alt: "sakhandaru wearing a cum laude sash, sprawled across a row of theatre seats with his feet up, in an empty auditorium",
     placeholder: "[FOTO HERO KEDUA — BELUM DISEDIAKAN]",
   },

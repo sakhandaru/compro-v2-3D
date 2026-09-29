@@ -38,16 +38,16 @@ export default function Contact() {
   return (
     <section
       aria-labelledby="contact-heading"
-      className="relative bg-[#f7f6f2] px-5 pt-[16vh] pb-10 sm:px-8 sm:pt-[20vh]"
+      className="relative border-t border-zinc-300 bg-[#f7f6f2] px-5 pb-10 sm:px-8 section-top"
     >
       <div className="w-full">
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+        <p className="font-mono eyebrow text-zinc-600">
           {contactContent.bridge}
         </p>
 
         <h2
           id="contact-heading"
-          className="font-display pixel-dense mt-10 text-[clamp(3rem,13vw,9rem)] leading-[0.86] tracking-[-0.04em] text-zinc-900"
+          className="font-display pixel-dense display-xl mt-12 sm:mt-16 text-zinc-900"
         >
           {contactContent.headline.map((line) => (
             <span key={line} className="block">
@@ -64,9 +64,9 @@ export default function Contact() {
           free: at this size a drifting line is still motion, and motion is exactly
           what that media query is for.
         */}
-        <div aria-hidden className="mt-14 overflow-hidden sm:mt-16">
+        <div aria-hidden className="mt-12 overflow-hidden sm:mt-16">
           <div
-            className="marquee-track marquee-left font-display pixel-dense text-[clamp(1.5rem,4vw,3rem)] leading-none whitespace-nowrap text-zinc-300 select-none"
+            className="marquee-track marquee-left font-display pixel-dense display-statement whitespace-nowrap text-zinc-300 select-none"
             style={{ animationDuration: "65s" }}
           >
             {[0, 1].map((copy) => (
@@ -81,7 +81,7 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="mt-12 sm:mt-14">
+        <div className="mt-12 sm:mt-16">
           {/*
             The two addresses a phone can act on, set on one line because they are
             one idea: how to reach a person. The number is a `tel:` and not text,
@@ -90,13 +90,13 @@ export default function Contact() {
           <p className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
             <a
               href={`mailto:${contactContent.email}`}
-              className="inline-block py-3 font-mono text-[0.9375rem] tracking-[0.18em] text-zinc-900 uppercase underline decoration-zinc-300 underline-offset-[6px] transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+              className="inline-block py-3 font-mono text-[0.9375rem] text-zinc-900 underline decoration-zinc-300 underline-offset-[6px] transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
             >
               {contactContent.email}
             </a>
             <a
               href={contactContent.phone.href}
-              className="inline-block py-3 font-mono text-[0.9375rem] tracking-[0.18em] text-zinc-900 uppercase underline decoration-zinc-300 underline-offset-[6px] transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+              className="inline-block py-3 font-mono text-[0.9375rem] text-zinc-900 underline decoration-zinc-300 underline-offset-[6px] transition-colors hover:decoration-zinc-900 focus-visible:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
             >
               {contactContent.phone.display}
             </a>
@@ -115,7 +115,7 @@ export default function Contact() {
                   href={channel.href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="inline-block py-[0.9375rem] font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600 underline decoration-zinc-300 underline-offset-4 transition-colors hover:text-zinc-900 hover:decoration-zinc-900 focus-visible:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+                  className="inline-block py-[0.9375rem] font-mono eyebrow text-zinc-600 underline decoration-zinc-300 underline-offset-4 transition-colors hover:text-zinc-900 hover:decoration-zinc-900 focus-visible:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
                 >
                   {channel.label}
                 </a>
@@ -131,7 +131,7 @@ export default function Contact() {
           id: it scrolls, it takes focus, and Enter and Space work without any
           code from us.
         */}
-        <footer className="mt-[16vh] flex flex-wrap items-baseline justify-between gap-4 border-t border-zinc-300 pt-6 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+        <footer className="mt-16 flex flex-wrap items-baseline justify-between gap-4 border-t border-zinc-300 pt-6 font-mono eyebrow text-zinc-600 sm:mt-24">
           {/*
             Copyright and location read as one line on the left. Split across a
             three-item justify-between the location floats in the middle of the row
@@ -146,7 +146,7 @@ export default function Contact() {
           <button
             type="button"
             onClick={toTop}
-            className="-my-2 cursor-pointer px-1 py-[0.9375rem] uppercase transition-colors hover:text-zinc-900 focus-visible:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
+            className="-my-2 cursor-pointer px-1 py-[0.9375rem] transition-colors hover:text-zinc-900 focus-visible:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
           >
             {contactContent.backToTop}
           </button>

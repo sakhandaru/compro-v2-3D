@@ -37,12 +37,13 @@ export default function SelectedWork() {
     <section
       id="selected-work"
       aria-labelledby="work-heading"
-      className="relative bg-[#f7f6f2] px-5 py-[18vh] sm:px-8 sm:py-[22vh]"
+      className="relative border-t border-zinc-300 bg-[#f7f6f2] px-5 sm:px-8 section-y"
     >
       <div className="w-full">
+        <p className="font-mono eyebrow text-zinc-600">~/selected-work</p>
         <h2
           id="work-heading"
-          className="font-display pixel-dense max-w-[12ch] text-[clamp(2rem,7vw,5.5rem)] leading-[0.9] tracking-[-0.03em] text-zinc-900"
+          className="font-display pixel-dense display-lg mt-6 max-w-[12ch] text-zinc-900"
         >
           {projectsContent.heading}
         </h2>

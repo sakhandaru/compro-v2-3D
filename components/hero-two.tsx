@@ -81,7 +81,7 @@ export default function HeroTwo() {
             aria-hidden
             className="absolute inset-0 grid place-items-center bg-[#0e0e11]"
           >
-            <p className="px-6 text-center font-mono text-[11px] leading-relaxed tracking-wide text-[#6f6d68]">
+            <p className="px-6 text-center font-mono text-[11px] leading-relaxed text-[#6f6d68]">
               {heroContent.photo.placeholder}
               <br />
             </p>
@@ -122,7 +122,7 @@ export default function HeroTwo() {
         </div>
 
         <div className="relative flex min-h-screen flex-col justify-end px-5 pb-14 sm:px-8 sm:pb-20">
-          <h2 className="font-display pixel-dense text-[clamp(2.5rem,9vw,7rem)] leading-[0.86] tracking-[-0.03em] text-[#f2efe7]">
+          <h2 className="font-display pixel-dense display-xl text-[#f2efe7]">
             {heroContent.headline}
           </h2>
         </div>

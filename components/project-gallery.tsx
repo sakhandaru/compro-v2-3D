@@ -19,14 +19,17 @@ import { useState } from "react";
  * and one is a tall laptop and phone pair at 883 by 1800. Letting each one size
  * itself would make the row jump every time the arrow is pressed.
  *
- * The arrows and the dots are here because the owner asked for next and slide. They
- * are real buttons, so Tab reaches them and Enter and Space work without any code
- * here, and the position is announced in text rather than only as dot styling, so
- * it survives a screen reader and a browser with the CSS stripped out.
+ * The `prev` / `next` commands and the cells are here because the owner asked
+ * for next and slide. They are real buttons, so Tab reaches them and Enter
+ * and Space work without any code here, and the position is announced in text
+ * rather than only as cell styling, so it survives a screen reader and a
+ * browser with the CSS stripped out.
  *
- * The chevrons are drawn here rather than pulled from an icon package. A previous
- * or next chevron is a control glyph, not a brand, and importing a set for two
- * arrows would drag its whole visual character along with them.
+ * Plain words, deliberately: an earlier pass used vim's `:bp` / `:bn`, which
+ * is the right vocabulary and the wrong usability, since anyone outside vim
+ * cannot parse it. `prev` / `next` in the page's mono voice keeps the theme
+ * and stays readable to a lay reader. No box, no chevron, no circle: the word
+ * sits bare and underlines like every other text link here.
  */
 export default function ProjectGallery({
   screens,
@@ -64,55 +67,44 @@ export default function ProjectGallery({
       {many ? (
         <>
           {/*
-            The shadow is not decoration here. These buttons sit directly on the same
-            cream as the artwork, and a white circle on cream with no edge would be
-            invisible until you found it, so the lift is what makes the control
-            findable. It is the one place on this page a shadow earns its place.
+            Bare commands, no box. Resting in zinc-600 (7.15:1, lolos 4.5:1
+            untuk teks kecil), hover menggarisbawah seperti semua link teks di
+            halaman ini. Kotak 44px dipertahankan untuk target sentuh.
           */}
           <button
             type="button"
             onClick={() => step(-1)}
             aria-label={`Previous capture, ${title}`}
-            className="absolute top-1/2 -left-1 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-zinc-900 shadow-[0_2px_10px_rgba(24,24,27,0.14)] transition-colors hover:bg-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 sm:-left-3"
+            className="absolute top-1/2 -left-1 grid h-11 min-w-11 -translate-y-1/2 cursor-pointer place-items-center px-2 font-mono text-sm text-zinc-600 underline decoration-zinc-300 underline-offset-4 transition-colors hover:text-zinc-900 hover:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 sm:-left-3"
           >
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden fill="none">
-              <path
-                d="M15 5l-7 7 7 7"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="square"
-              />
-            </svg>
+            <span aria-hidden>prev</span>
           </button>
 
           <button
             type="button"
             onClick={() => step(1)}
             aria-label={`Next capture, ${title}`}
-            className="absolute top-1/2 -right-1 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-zinc-900 shadow-[0_2px_10px_rgba(24,24,27,0.14)] transition-colors hover:bg-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 sm:-right-3"
+            className="absolute top-1/2 -right-1 grid h-11 min-w-11 -translate-y-1/2 cursor-pointer place-items-center px-2 font-mono text-sm text-zinc-600 underline decoration-zinc-300 underline-offset-4 transition-colors hover:text-zinc-900 hover:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 sm:-right-3"
           >
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden fill="none">
-              <path
-                d="M9 5l7 7-7 7"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="square"
-              />
-            </svg>
+            <span aria-hidden>next</span>
           </button>
 
           {/*
-            The dots were the worst tap targets on the page: `h-1.5 w-1.5` with no
+            The cells were the worst tap targets on the page: `h-1.5 w-1.5` with no
             padding, so the button box was six by six pixels and the gap between two
             of them was eight. On a desktop cursor that is a small dot; under a thumb
             it is a control that cannot be hit, and the eight pixel gap means two
             neighbouring targets sat close enough to read as one.
 
-            So the button is 44 by 44 and the dot is a child centred inside it. The
+            So the button is 44 by 44 and the cell is a child centred inside it. The
             row gap goes to zero, because two 44 pixel boxes laid side by side already
             touch exactly, and any gap on top of that would only open a dead strip
-            between them. The visual result is the same six and twenty four pixel
-            marks, just spaced at a pitch a finger can aim at.
+            between them.
+
+            Cells rather than dots: the same █/░ language as the portal loader,
+            set in the same system mono stack so every cell fills its advance
+            width equally. The gallery position reads as a terminal readout, and
+            the page gains one repeated motif instead of two competing ones.
           */}
           <div className="mt-6 flex items-center justify-center">
             {screens.map((screen, i) => (
@@ -126,19 +118,21 @@ export default function ProjectGallery({
               >
                 <span
                   aria-hidden
-                  className={`block rounded-full transition-all ${
+                  className={`bar-mono block text-base leading-none transition-colors ${
                     i === index
-                      ? "h-1.5 w-6 bg-zinc-900"
-                      : "h-1.5 w-1.5 bg-zinc-300 group-hover/dot:bg-zinc-500"
+                      ? "text-zinc-900"
+                      : "text-zinc-300 group-hover/dot:text-zinc-500"
                   }`}
-                />
+                >
+                  {i === index ? "█" : "░"}
+                </span>
               </button>
             ))}
           </div>
         </>
       ) : null}
 
-      <p className="mt-3 text-center font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+      <p className="mt-3 text-center font-mono eyebrow tabular-nums text-zinc-600">
         {index + 1} / {screens.length}
       </p>
     </div>
