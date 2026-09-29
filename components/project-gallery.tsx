@@ -41,42 +41,150 @@ export default function ProjectGallery({
   const [index, setIndex] = useState(0);
   const many = screens.length > 1;
 
-  const step = (delta: number) => {
-    setIndex((current) => (current + delta + screens.length) % screens.length);
+  /*
+   * The capture follows the finger, then either snaps to the next one or falls
+   * back. Two layers are enough for that: the capture on screen, and the one
+   * it is travelling towards, parked one full width away. Rendering the whole
+   * set as a track would mean twenty five mounted images per project for a
+   * gesture that only ever shows two.
+   *
+   * The offset lives in a ref and is written straight to the two elements'
+   * transform during the drag. Putting it in state would re-render the gallery
+   * on every pointermove and the capture would lag a frame behind the thumb,
+   * which is the exact opposite of following it. React state is only told the
+   * index after the travel is over.
+   *
+   * `touch-action: pan-y` is the load-bearing part of the gesture. It leaves
+   * vertical scrolling to the browser while horizontal movement belongs to us,
+   * so a thumb that lands on a capture and drags upward still scrolls the page
+   * instead of being swallowed as a swipe that goes nowhere. When the browser
+   * does claim the gesture for a scroll it fires pointercancel, and the
+   * capture is put back rather than committed.
+   *
+   * A drag only counts when it is more horizontal than vertical, and only past
+   * 40px, so a tap that wobbles and a scroll that drifts sideways a little
+   * both land as no gesture at all.
+   *
+   * The images are marked `draggable={false}` for the same reason the capture
+   * is captured. An image is natively draggable, and the browser starts that
+   * drag the moment a pointer moves while held, which fires pointercancel and
+   * ends the gesture before it can finish. It reads as the swipe simply
+   * refusing to work, and on a touch screen it is a long press away.
+   */
+  const [dir, setDir] = useState(1);
+  const [travelling, setTravelling] = useState(false);
+  const base = useRef<HTMLDivElement>(null);
+  const incoming = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+  const width = useRef(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const EASE = "cubic-bezier(0.22, 0.61, 0.36, 1)";
+  const still = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const place = (node: HTMLDivElement | null, x: number, ms: number) => {
+    if (!node) return;
+    node.style.transition = ms ? `transform ${ms}ms ${EASE}` : "none";
+    node.style.transform = `translate3d(${x}px, 0, 0)`;
   };
 
   /*
-   * Swipe, because prev/next alone is not the whole gesture vocabulary of a
-   * phone. The command bar stays as it is: a swipe cannot be reached by Tab, so
-   * removing the buttons for it would trade a working control for an
-   * unreachable one. Swipe is the extra, not the replacement.
-   *
-   * `touch-action: pan-y` on the group is the load-bearing part. It tells the
-   * browser it may still scroll the page vertically from this element while
-   * horizontal movement is ours, so a thumb that lands on a capture and drags
-   * upward still scrolls the page instead of being swallowed as a swipe that
-   * goes nowhere. Pointer events cover finger, pen and mouse in one path.
-   *
-   * A drag only counts when it is more horizontal than vertical, and only past
-   * 40px, so a tap that wobbles and a vertical scroll that drifts sideways a
-   * little both land as no gesture at all.
+   * Finish the travel to `next`. Both layers are pushed to their end position
+   * at once, the index is committed, then the layers are snapped back to
+   * neutral with transitions off. The commit happens on a timer rather than
+   * on transitionend, because a layer that is display:none or off screen can
+   * skip the event and leave the gallery stranded mid slide.
    */
-  const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+  const land = (next: number, from: number, travel: number) => {
+    if (timer.current) clearTimeout(timer.current);
+
+    if (still()) {
+      setDir(next > from ? 1 : -1);
+      setTravelling(false);
+      setIndex(next);
+      return;
+    }
+
+    const ms = 260;
+    setTravelling(true);
+    setDir(next > from ? 1 : -1);
+    place(base.current, travel, ms);
+    place(incoming.current, travel + (next > from ? -width.current : width.current), ms);
+
+    timer.current = setTimeout(() => {
+      place(base.current, 0, 0);
+      place(incoming.current, 0, 0);
+      setTravelling(false);
+      setIndex(next);
+    }, ms);
+  };
+
+  const step = (delta: number) => {
+    if (!many) return;
+    const from = index;
+    const next = (from + delta + screens.length) % screens.length;
+    setDir(delta > 0 ? 1 : -1);
+    setTravelling(true);
+    land(next, from, delta > 0 ? -width.current : width.current);
+  };
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!many || (event.pointerType === "mouse" && event.button !== 0)) return;
+    width.current = event.currentTarget.getBoundingClientRect().width;
     drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    /*
+      Capture, because a flick travels further than the capture is wide: the
+      gallery is 350px and a 200px flick starting from the middle ends up
+      outside it. Without capture the release lands on whatever is next in the
+      page, the gallery never hears that the gesture ended, and the capture is
+      left stranded half way across with the neighbour still mounted. Capturing
+      retargets every later event for this pointer back here, wherever the
+      finger actually is.
+    */
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const start = drag.current;
+    if (!start || start.id !== event.pointerId || !width.current) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) <= Math.abs(dy)) return;
+
+    if (!travelling) {
+      setDir(dx < 0 ? 1 : -1);
+      setTravelling(true);
+    }
+    place(base.current, dx, 0);
+    place(incoming.current, dx + (dx < 0 ? width.current : -width.current), 0);
   };
 
   const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const start = drag.current;
     drag.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
     if (!start || start.id !== event.pointerId) return;
     const dx = event.clientX - start.x;
     const dy = event.clientY - start.y;
-    if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(dy)) return;
-    step(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(dy)) {
+      if (travelling) land(index, index, 0);
+      return;
+    }
+    const next = (index + (dx < 0 ? 1 : -1) + screens.length) % screens.length;
+    land(next, index, dx);
   };
+
+  const onPointerCancel = () => {
+    drag.current = null;
+    if (travelling) land(index, index, 0);
+  };
+
+  const shown = screens[index]!;
+  const next = screens[(index + dir + screens.length) % screens.length]!;
 
   return (
     <div className="relative">
@@ -85,21 +193,50 @@ export default function ProjectGallery({
         aria-label={`${title}, screen captures`}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
-        onPointerCancel={() => {
-          drag.current = null;
-        }}
-        className="flex h-[clamp(17rem,38vw,27rem)] touch-pan-y items-center justify-center select-none"
+        onPointerMove={onPointerMove}
+        onPointerCancel={onPointerCancel}
+        className="relative flex h-[clamp(17rem,38vw,27rem)] touch-pan-y items-center justify-center overflow-hidden select-none"
       >
-        <Image
-          key={screens[index]}
-          src={screens[index]!}
-          alt={`${title}, capture ${index + 1} of ${screens.length}`}
-          width={1800}
-          height={1412}
-          sizes="(min-width: 1024px) 40vw, 92vw"
-          priority={false}
-          className="max-h-full w-auto max-w-full object-contain"
-        />
+        <div ref={base} className="flex h-full w-full items-center justify-center">
+          <Image
+            key={shown}
+            src={shown}
+            alt={`${title}, capture ${index + 1} of ${screens.length}`}
+            width={1800}
+            height={1412}
+            sizes="(min-width: 1024px) 40vw, 92vw"
+            priority={false}
+            draggable={false}
+            className="max-h-full w-auto max-w-full object-contain"
+          />
+        </div>
+
+        {/*
+          The neighbour, parked one full width to the side. It is mounted only
+          while the gallery is travelling, so the resting page still costs one
+          image per project. `aria-hidden` because the readout below already
+          names the position, and a screen reader should not meet two captures
+          where the control reports one.
+        */}
+        {travelling ? (
+          <div
+            ref={incoming}
+            aria-hidden
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Image
+              key={next}
+              src={next}
+              alt=""
+              width={1800}
+              height={1412}
+              sizes="(min-width: 1024px) 40vw, 92vw"
+              priority={false}
+              draggable={false}
+              className="max-h-full w-auto max-w-full object-contain"
+            />
+          </div>
+        ) : null}
       </div>
 
       {many ? (
