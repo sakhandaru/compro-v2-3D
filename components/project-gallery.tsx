@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState, type PointerEvent } from "react";
 
 /**
  * The device captures, one at a time, with the owner's own mockups.
@@ -45,12 +45,50 @@ export default function ProjectGallery({
     setIndex((current) => (current + delta + screens.length) % screens.length);
   };
 
+  /*
+   * Swipe, because prev/next alone is not the whole gesture vocabulary of a
+   * phone. The command bar stays as it is: a swipe cannot be reached by Tab, so
+   * removing the buttons for it would trade a working control for an
+   * unreachable one. Swipe is the extra, not the replacement.
+   *
+   * `touch-action: pan-y` on the group is the load-bearing part. It tells the
+   * browser it may still scroll the page vertically from this element while
+   * horizontal movement is ours, so a thumb that lands on a capture and drags
+   * upward still scrolls the page instead of being swallowed as a swipe that
+   * goes nowhere. Pointer events cover finger, pen and mouse in one path.
+   *
+   * A drag only counts when it is more horizontal than vertical, and only past
+   * 40px, so a tap that wobbles and a vertical scroll that drifts sideways a
+   * little both land as no gesture at all.
+   */
+  const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!many || (event.pointerType === "mouse" && event.button !== 0)) return;
+    drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  };
+
+  const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    const start = drag.current;
+    drag.current = null;
+    if (!start || start.id !== event.pointerId) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(dy)) return;
+    step(dx < 0 ? 1 : -1);
+  };
+
   return (
     <div className="relative">
       <div
         role="group"
         aria-label={`${title}, screen captures`}
-        className="flex h-[clamp(17rem,38vw,27rem)] items-center justify-center"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => {
+          drag.current = null;
+        }}
+        className="flex h-[clamp(17rem,38vw,27rem)] touch-pan-y items-center justify-center select-none"
       >
         <Image
           key={screens[index]}
