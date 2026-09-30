@@ -101,6 +101,8 @@ export default function ProjectGallery({
     if (timer.current) clearTimeout(timer.current);
 
     if (still()) {
+      place(base.current, 0, 0);
+      place(incoming.current, 0, 0);
       setDir(next > from ? 1 : -1);
       setTravelling(false);
       setIndex(next);
@@ -157,6 +159,7 @@ export default function ProjectGallery({
       setDir(dx < 0 ? 1 : -1);
       setTravelling(true);
     }
+    if (still()) return;
     place(base.current, dx, 0);
     place(incoming.current, dx + (dx < 0 ? width.current : -width.current), 0);
   };
@@ -276,10 +279,10 @@ export default function ProjectGallery({
             touch exactly, and any gap on top of that would only open a dead strip
             between them.
 
-            Cells rather than dots: the same █/░ language as the portal loader,
-            set in the same system mono stack so every cell fills its advance
-            width equally. The gallery position reads as a terminal readout, and
-            the page gains one repeated motif instead of two competing ones.
+            Cells rather than dots: the █/░ block language, set in the same
+            system mono stack so every cell fills its advance width equally. The
+            gallery position reads as a terminal readout, and the page gains one
+            repeated motif instead of two competing ones.
           */}
           <div className="mt-6 flex items-center justify-center">
             {screens.map((screen, i) => (

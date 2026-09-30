@@ -20,7 +20,7 @@ import { techstackContent } from "@/content/techstack";
  * rather than as emphasis. The dark card borrows the black the hero CRT
  * already owns, so the exception has friends. Radius is zero by decision.
  *
- * Nothing here moves. The Hero, the portal and the Timeline all move, and a
+ * Nothing here moves. The Hero and the Timeline both move, and a
  * section that is meant to feel like the calmest thing on the page should not
  * compete with them for attention. A static block is a legitimate break in the
  * rhythm rather than a missing animation.
@@ -157,8 +157,8 @@ export default function About() {
             Profil sebagai kartu kode gelap, bukan paragraf.
 
             Alasannya: referensi owner menampilkan bio sebagai const di editor,
-            dan satu permukaan gelap punya teman di web ini (layar CRT hero dan
-            portal yang hitam), jadi ia focal point yang sah, bukan gaya
+             dan satu permukaan gelap punya teman di web ini (layar CRT hero
+             yang hitam), jadi ia focal point yang sah, bukan gaya
             tempelan. Isinya data asli dari content/about.ts yang dirender baris
             per baris, bukan teks tempel: ganti data di content, kartu ikut
             berubah. Dua tone zinc saja, monokrom seperti referensi. Statis dan

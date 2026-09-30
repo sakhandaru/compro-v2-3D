@@ -482,8 +482,8 @@ export default function Timeline() {
                   this cream, where R-25 asks 3:1 for text this size. The year was
                   already on screen twice over, in the caption below and in the
                   ruler labels, so it went and the corner got something honest
-                  instead. This reads like the counter in the CRT portal, which is
-                  the same instrument.
+                   instead. This reads like the counter on the CRT screen, which is
+                   the same instrument.
                 */}
                 <p
                   ref={counter}

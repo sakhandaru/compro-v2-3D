@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import ReactDOM from "react-dom";
 import { Geist_Mono, Geist_Pixel } from "next/font/google";
 import "./globals.css";
 import { siteContent } from "@/content/site";
+import { MODEL_URL } from "@/components/terminal-palette";
 
 // Geist Sans dicabut: tidak ada lagi teks sans di halaman ini (archived reason:
 // semua konten memakai Pixel atau Mono). Body jatuh ke stack sistem sebagai
@@ -70,6 +72,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  ReactDOM.preload(MODEL_URL, {
+    as: "fetch",
+    crossOrigin: "anonymous",
+    fetchPriority: "high",
+  });
+
   return (
     <html
       lang={siteContent.lang}

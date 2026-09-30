@@ -12,9 +12,9 @@ const MIN_HOLD = 900;
   unrendered assets and becomes a broken page. Past this it lifts anyway and the
   model's own loading line catches whatever is still coming.
 */
-const MAX_HOLD = 3500;
+const MAX_HOLD = 2000;
 /** Mirrors `entrance-lift` in globals.css. The two timelines have to agree. */
-const LIFT_MS = 2000;
+const LIFT_MS = 1000;
 /** Share of the lift the collapse gets; the last sliver is the dot letting go. */
 const CLIP_SHARE = 0.88;
 /**

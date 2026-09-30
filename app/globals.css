@@ -28,8 +28,8 @@
 /*
  * A real monospace stack, and it is not `--font-mono`.
  *
- * `--font-mono` adalah Geist Mono webfont untuk label dan readout. Panel
- * portal di bawah ini memakai stack sistem karena digambar dari karakter blok
+ * `--font-mono` adalah Geist Mono webfont untuk label dan readout. Sel galeri
+ * proyek memakai stack sistem karena digambar dari karakter blok
  * U+2588 dan U+2591: kedua glyph itu hanya sejajar kalau sama-sama mengisi
  * advance width-nya, dan itu hanya dijamin di face monospace sistem seperti
  * Consolas, Menlo dan SFMono. Webfont tidak boleh menanggungnya, jadi tidak
@@ -89,6 +89,10 @@ body {
 
 .marquee-right {
   animation-name: marquee-right;
+}
+
+.hero-offview [data-marquee-track] {
+  animation-play-state: paused;
 }
 
 /* Two densities out of one weight, via the pixel axis. */
@@ -277,7 +281,7 @@ body {
 }
 
 html.entrance-go .entrance-veil {
-  animation: entrance-lift 2000ms both;
+  animation: entrance-lift 1000ms both;
 }
 
 @keyframes entrance-failsafe {

@@ -338,7 +338,7 @@ export default function HeroCanvas({
             can see on this model. high-performance asks for the discrete GPU
             where one exists instead of melting the integrated one.
           */
-          dpr={[1, 1.5]}
+          dpr={[1, 1.25]}
           gl={{
             alpha: true,
             antialias: true,

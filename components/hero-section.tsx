@@ -6,13 +6,8 @@ import HeroTwo from "@/components/hero-two";
 import SelectedWork from "@/components/selected-work";
 import Timeline from "@/components/timeline";
 import AboutContactSection from "@/components/about-contact-section";
-import PortalLoader, { type PortalHandle } from "@/components/portal-loader";
 import { heroContent } from "@/content/hero";
 import { siteContent } from "@/content/site";
-import {
-  PORTAL_FADE,
-  PORTAL_START,
-} from "@/components/terminal-palette";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -50,22 +45,6 @@ export default function HeroSection() {
   const driver = useRef({ t: 0 });
   const [reduced, setReduced] = useState(false);
   const [durations, setDurations] = useState<string[]>([]);
-  const [nodes, setNodes] = useState<PortalHandle>({
-    fill: null,
-  });
-  /*
-    Dismissed once the load completes: the loader shows exactly once per page
-    load, never again on the way back up. Separate from the latch below, which
-    guards the fill value itself; this guards the overlay's existence.
-  */
-  const [dismissed, setDismissed] = useState(false);
-  /*
-    The latch. Once the fill has reached the end it stays there, so scrolling back up
-    does not empty the screen and slam the portal shut on work the reader has already
-    seen. A ref guards the state update because onComplete can fire again on a second
-    forward pass.
-  */
-  const latched = useRef(false);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -73,6 +52,17 @@ export default function HeroSection() {
     sync();
     query.addEventListener("change", sync);
     return () => query.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    const element = section.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => element.classList.toggle("hero-offview", !entry!.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
   }, []);
 
   /*
@@ -108,9 +98,14 @@ export default function HeroSection() {
   useLayoutEffect(() => {
     if (reduced || !section.current) return;
 
-    // Scroll drives the camera and the portal fill. The type is not in this
-    // timeline, it runs on its own clock, so the two motions stay independent
-    // instead of collapsing into one scrubbed move.
+    /*
+      Scroll drives the camera. The type is not in this timeline, it runs on its
+      own clock, so the two motions stay independent instead of collapsing into
+      one scrubbed move. The tween has to span the whole runway: its duration is
+      measured in timeline units against the trigger, so anything under 1 stops
+      the camera early and leaves a stretch where the page moves and the model
+      does not answer.
+    */
     const context = gsap.context(() => {
       const timeline = gsap.timeline({
         defaults: { ease: "none" },
@@ -123,56 +118,12 @@ export default function HeroSection() {
         },
       });
 
-      /*
-        Phase one is the camera, and it is over before the loader appears. 15.4
-        wants the black screen to become the portal, and a portal only reads as a
-        surface if it has stopped moving; a loader drawn over a computer that is
-        still growing looks like a sticker.
-      */
-      timeline.to(driver.current, { t: 1, duration: PORTAL_START }, 0);
-
-      const portal = section.current?.querySelector("[data-portal]");
-      if (portal) timeline.fromTo(portal, { opacity: 0 }, { opacity: 1, duration: PORTAL_FADE }, PORTAL_START);
-
-      /*
-        The fill is written straight to the nodes instead of being tweened on them.
-        Two reasons: the readout is text, which cannot be tweened, and the latch
-        needs to override the scrubbed value, which a tween on the element would
-        fight. One writer, one source of truth.
-      */
-      const fill = { value: 0 };
-      timeline.to(
-        fill,
-        {
-          value: 1,
-          duration: 1 - PORTAL_START,
-          onUpdate: () => {
-            const value = latched.current ? 1 : fill.value;
-
-            /*
-              The fill, written as a width on the inner bar. Floored at two
-              percent once moving, so the very first pixel of scroll shows life:
-              a reader scrolling an entirely empty outline wonders whether
-              anything is happening.
-            */
-            if (nodes.fill) {
-              const percent = value <= 0 ? 0 : Math.max(2, value * 100);
-              nodes.fill.style.width = `${percent.toFixed(1)}%`;
-            }
-          },
-          onComplete: () => {
-            if (latched.current) return;
-            latched.current = true;
-            setDismissed(true);
-          },
-        },
-        PORTAL_START,
-      );
+      timeline.to(driver.current, { t: 1, duration: 1 }, 0);
     }, section);
 
     ScrollTrigger.refresh();
     return () => context.revert();
-  }, [reduced, nodes]);
+  }, [reduced]);
 
   if (reduced) {
     // No pinning, no marquee, no camera travel. The type sits under the canvas in
@@ -209,14 +160,13 @@ export default function HeroSection() {
         Runway in svh, sticky in dvh, and the difference is the whole point.
         A vh runway is proportional to the viewport, so when the mobile URL bar
         collapses the runway loses a full viewport of length and the same scrollY
-        lands much further along the timeline. Measured: the portal fill jumped from
-        093 to 100 mid-fill on an 844 to 700 pixel viewport change, which on a real
-        phone is every time the bar slides away. svh does not move, so the mapping
-        holds. dvh on the sticky is the opposite requirement: it must always match the
-        visible area exactly, or a strip of the next section peeks in when the bar
-        hides.
+        lands much further along the camera timeline than it did a moment ago.
+        svh does not move, so the mapping holds across the bar sliding away. dvh
+        on the sticky is the opposite requirement: it must always match the
+        visible area exactly, or a strip of the next section peeks in when the
+        bar hides.
       */}
-      <section ref={section} className="relative h-[600svh] bg-[#f7f6f2]">
+      <section ref={section} className="relative h-[300svh] sm:h-[450svh] bg-[#f7f6f2]">
       <div className="sticky top-0 h-dvh overflow-hidden">
         {/*
           Order matters. The type sits below the canvas and the canvas is
@@ -265,14 +215,6 @@ export default function HeroSection() {
         </div>
 
         {/*
-          Sits on top of the canvas, not after it. The loader belongs to the screen
-          the camera has flown into, and the canvas is the only thing that can supply
-          that surface, so anything placed in a separate section would land on the
-          warm page background instead of on black.
-        */}
-        <PortalLoader onNodes={setNodes} dismissed={dismissed} />
-
-        {/*
           The field carries no headline, so the name is exposed here instead. It is
           the page's only h1 and it is what a screen reader, a search crawler and a
           link preview get.
@@ -281,12 +223,11 @@ export default function HeroSection() {
         </div>
       </section>
       {/*
-        A sibling of the hero, never a child of it. The hero is a fixed 600vh runway,
-        so anything nested inside it would collide with the sticky viewport instead of
-        following it. And it is never conditionally rendered: hiding it until the fill
-        completed would change the document height under the reader and yank the page
-        out from under them. Reaching it already requires scrolling past the whole
-        fill, so it cannot be reached unopened.
+        A sibling of the hero, never a child of it. The hero is a fixed runway
+        several viewports tall, so anything nested inside it would collide with the
+        sticky viewport instead of following it. And it is never conditionally
+        rendered: revealing it on a scroll trigger would change the document height
+        under the reader and yank the page out from under them.
       */}
       <HeroTwo />
       <SelectedWork />

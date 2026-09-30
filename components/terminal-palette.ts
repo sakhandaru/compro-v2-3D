@@ -12,8 +12,8 @@ export const SCREEN_MESH_NAME = "Cube004_1";
 /**
  * Palette. Three core values plus one accent, which is the ceiling set in
  * DESIGN..md 29. The body is pulled from the original asset's own texture so it
- * stays recognisable, the screen is the near-black the portal needs, and the
- * knob is the single accent.
+ * stays recognisable, the screen is the near-black the entrance veil is painted
+ * to match, and the knob is the single accent.
  */
 export const BODY_COLOR = "#e3dcc8";
 export const KEY_COLOR = "#c4b99c";
@@ -82,24 +82,6 @@ export const SCREEN_BLEED = 0.94;
  * opacity, and the two collided.
  */
 export const CAMERA_LAG = 1.7;
-
-/**
- * Scroll split across the hero. The camera has to finish before the portal opens,
- * otherwise the loading draws over a computer that is still growing, and the screen
- * stops reading as a surface. DESIGN..md 15.4 wants the black screen to become the
- * portal, so the loader has to land on a screen that has already stopped moving.
- * The fill gets the remaining 0.22, which is 150vh of scroll at the current runway.
- */
-export const PORTAL_START = 0.7;
-
-/**
- * How quickly the portal itself appears once the camera has stopped. Short on
- * purpose: the screen is already black and still by this point, so a slow fade just
- * delays the bar becoming the thing the reader scrolls for.
- */
-export const PORTAL_FADE = 0.04;
-
-export const PORTAL_INK = "#efece2";
 
 /**
  * Breathing room around the model in the wide shot. The marquee is a full-bleed
