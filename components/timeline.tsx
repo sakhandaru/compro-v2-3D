@@ -338,6 +338,7 @@ export default function Timeline() {
     return (
       <section
         ref={section}
+        id="the-record"
         aria-labelledby="timeline-heading"
         className="relative section-rule bg-[#f7f6f2] px-5 sm:px-8 section-y"
       >
@@ -354,6 +355,7 @@ export default function Timeline() {
   return (
     <section
       ref={section}
+      id="the-record"
       aria-labelledby="timeline-heading"
       className="relative section-rule bg-[#f7f6f2]"
       style={{ height: `${100 + RUNWAY}svh` }}

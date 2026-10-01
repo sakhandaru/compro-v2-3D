@@ -315,6 +315,44 @@ html.entrance-go .entrance-veil {
 }
 
 /*
+ * Menu panel of the floating nav: it rises 8px and fades in, once, on open.
+ *
+ * One entrance and no exit, on purpose. The panel is a state of the bar rather
+ * than a thing that comes and goes, so it should arrive and then simply not be
+ * there when the state flips back. 160ms is below the threshold where a reader
+ * waits for it, and it is the same weight as the site's hover transitions.
+ */
+.nav-panel {
+  animation: nav-panel-in 160ms ease-out both;
+}
+
+/* The scrim is a full-bleed dim, so it fades and does not move: translating a
+   layer that touches every edge would leave a gap on the leading side. */
+.nav-scrim {
+  animation: nav-scrim-in 160ms ease-out both;
+}
+
+@keyframes nav-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes nav-scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*
   Reduced motion is a hard stop, not a slower loop. A marquee that still drifts
   is still motion, and this one is large enough to be a problem.
 */
@@ -322,6 +360,15 @@ html.entrance-go .entrance-veil {
   .marquee-track {
     animation: none;
     transform: none;
+  }
+
+  /* The nav still opens and closes, it simply does not travel. The selectors are
+     repeated at the same specificity as the rules above so this guard wins the
+     cascade, and with `animation` off the elements fall back to their own
+     opacity and transform rather than to the `from` frame. */
+  .nav-panel,
+  .nav-scrim {
+    animation: none;
   }
 
   /*

@@ -138,6 +138,7 @@ export default function About() {
 
   return (
     <section
+      id="about"
       aria-labelledby="about-heading"
       className="relative section-rule bg-[#f7f6f2] px-5 sm:px-8 section-y"
     >

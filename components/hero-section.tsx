@@ -131,7 +131,7 @@ export default function HeroSection() {
     // behind the subject is just noise.
     return (
       <>
-        <section className="min-h-screen bg-[#f7f6f2]">
+        <section id="home" className="min-h-screen bg-[#f7f6f2]">
         <div className="relative h-[58vh] min-h-[320px] w-full">
           <HeroCanvas driver={driver} reduced />
         </div>
@@ -166,7 +166,11 @@ export default function HeroSection() {
         visible area exactly, or a strip of the next section peeks in when the
         bar hides.
       */}
-      <section ref={section} className="relative h-[300svh] sm:h-[450svh] bg-[#f7f6f2]">
+      <section
+        ref={section}
+        id="home"
+        className="relative h-[300svh] sm:h-[450svh] bg-[#f7f6f2]"
+      >
       <div className="sticky top-0 h-dvh overflow-hidden">
         {/*
           Order matters. The type sits below the canvas and the canvas is

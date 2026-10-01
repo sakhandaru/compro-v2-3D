@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ReactDOM from "react-dom";
 import { Geist_Mono, Geist_Pixel } from "next/font/google";
 import "./globals.css";
+import SiteNav from "@/components/site-nav";
 import { siteContent } from "@/content/site";
 import { MODEL_URL } from "@/components/terminal-palette";
 
@@ -83,7 +84,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang={siteContent.lang}
       className={`${geistPixel.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        {/*
+          Site chrome, so it belongs to the layout rather than to the one page.
+          It is `fixed` and therefore out of the body's flex flow, so it does not
+          become a third flex item next to `children`.
+        */}
+        <SiteNav />
+      </body>
     </html>
   );
 }

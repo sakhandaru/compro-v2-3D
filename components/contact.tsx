@@ -35,10 +35,18 @@ export default function Contact() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  /*
+    `pb-32` rather than the `pb-10` this used to carry, because the floating nav
+    now owns the bottom of the viewport: bar (56) + gap (16) + whatever the home
+    indicator asks for sits inside 128px, so the copyright line never scrolls
+    under the plate. The clearance is space the nav claims, not section rhythm,
+    which is why it lives here and not in `.section-top`.
+  */
   return (
     <section
+      id="contact"
       aria-labelledby="contact-heading"
-      className="relative section-rule bg-[#f7f6f2] px-5 pb-10 sm:px-8 section-top"
+      className="relative section-rule bg-[#f7f6f2] px-5 pb-32 sm:px-8 section-top"
     >
       <div className="w-full">
         <p className="font-mono eyebrow text-zinc-600">
