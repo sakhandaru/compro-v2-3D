@@ -26,4 +26,14 @@ export const navContent = {
   closeMenu: "close menu",
   home: "home",
   sections: "page sections",
+
+  /**
+   * The action that puts the site's address on the clipboard, and the word it
+   * turns into afterwards. Both live here rather than in the component so the
+   * word that is seen and the word that is announced are the same string: the
+   * button re-renders its own label inside an `aria-live` region
+   * (components/site-nav.tsx).
+   */
+  copyLink: "copy link",
+  copied: "copied",
 } as const;

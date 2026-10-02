@@ -6,30 +6,18 @@ export const contactContent = {
     href: "tel:+6287716632356",
   },
 
-  location: "Semarang, Indonesia",
-
-  bridge: "THERE'S MORE TO BUILD.",
-
-  headline: ["LET'S", "TALK."],
-
-  backToTop: "back to top",
-
   /**
-   * Header tiap kolom footer. Lowercase mono, satu suara dengan label `~/x`
-   * yang dipakai section lain: `index` menunjuk daftar isi halaman, `direct`
-   * untuk jalur yang benar-benar menghubungi orang (email, telepon, lokasi),
-   * `channels` untuk tautan luar. Bukan judul kolom template, melainkan nama
-   * dari isi kolom itu sendiri.
+   * Baris sosial media di footer, sekaligus `sameAs` untuk JSON-LD di
+   * `app/page.tsx`. Label lowercase mono tanpa ikon, satu suara dengan label
+   * `~/x` yang dipakai section lain.
+   *
+   * Empat profil: GitLab tidak dipakai, dan alamat situs sendiri tidak perlu
+   * dijual kepada orang yang sedang membacanya — mereka sudah berada di
+   * dalamnya. `download cv` bukan bagian dari daftar ini karena ia bukan profil
+   * di tempat lain, melainkan berkas di server ini (lihat `cv` di bawah).
    */
-  columns: {
-    index: "index",
-    direct: "direct",
-    channels: "channels",
-  },
-
   channels: [
     { kind: "github", label: "github", href: "https://github.com/sakhandaru", external: true },
-    { kind: "gitlab", label: "gitlab", href: "https://gitlab.com/sakhandaru", external: true },
     {
       kind: "linkedin",
       label: "linkedin",
@@ -43,11 +31,22 @@ export const contactContent = {
       external: true,
     },
     { kind: "whatsapp", label: "whatsapp", href: "https://wa.me/+6287716632356", external: true },
-    {
-      kind: "website",
-      label: "rifqisakha.my.id",
-      href: "https://www.rifqisakha.my.id",
-      external: true,
-    },
   ],
+
+  /**
+   * CV, sebagai kunci tersendiri supaya bentuknya berbeda dari channel: ini
+   * berkas yang sama-sama berada di server ini, jadi ia tidak punya
+   * `target="_blank"`, tidak masuk `sameAs`, dan membawa `download` sebagai
+   * nama berkas hasil unduhan.
+   *
+   * `href` menunjuk ke `public/cv.pdf` — taruh PDF-nya di sana, dan ganti
+   * `download` dengan nama yang ingin dilihat pembaca di dialog simpan.
+   */
+  cv: {
+    kind: "cv",
+    label: "download cv",
+    href: "/documents/cv2.pdf",
+    download: "sakhandaru-cv.pdf",
+    external: false,
+  },
 } as const;

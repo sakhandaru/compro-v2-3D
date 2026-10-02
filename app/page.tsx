@@ -7,10 +7,9 @@ import { siteContent } from "@/content/site";
 /*
  * Structured data for search engines and AI crawlers, built from the same
  * content files the page renders from, so the two cannot drift. sameAs takes
- * the profile channels only: whatsapp is a contact method, not a profile, and
- * the website channel is this very site.
+ * the profile channels only: whatsapp is a contact method, not a profile.
  */
-const PROFILE_KINDS = ["github", "gitlab", "linkedin", "instagram"] as const;
+const PROFILE_KINDS = ["github", "linkedin", "instagram"] as const;
 
 const jsonLd = {
   "@context": "https://schema.org",

@@ -10,6 +10,7 @@ import {
 } from "react";
 import { contactContent } from "@/content/contact";
 import { navContent } from "@/content/nav";
+import { siteContent } from "@/content/site";
 
 const items = navContent.items;
 
@@ -60,6 +61,15 @@ export default function SiteNav() {
   const menuRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
+
+  const [copied, setCopied] = useState(false);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimer.current) clearTimeout(copiedTimer.current);
+    };
+  }, []);
 
   /*
     Which section owns the middle of the screen.
@@ -203,6 +213,47 @@ export default function SiteNav() {
     menuRef.current?.focus();
   }, []);
 
+  /*
+    Put the address on the clipboard, and say so.
+
+    The Async Clipboard API only exists on a secure origin, and the site is
+    opened over plain http on a phone sitting on the same wifi more often than
+    not. The textarea fallback still runs there because it is a DOM command
+    rather than a permission, so the button never does nothing: if both paths
+    fail there is no feedback at all, which is the honest outcome — an
+    "copied" that lied would be worse than silence.
+
+    The confirmation is a label swap inside an `aria-live` region rather than a
+    toast: a floating message would be a second overlay competing with the bar
+    it belongs to, and the word the reader is already looking at is where their
+    eyes already are.
+  */
+  const copyLink = useCallback(async () => {
+    let done = false;
+
+    try {
+      await navigator.clipboard.writeText(siteContent.url);
+      done = true;
+    } catch {
+      const field = document.createElement("textarea");
+      field.value = siteContent.url;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.top = "-1000px";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      done = document.execCommand("copy");
+      field.remove();
+    }
+
+    if (!done) return;
+
+    setCopied(true);
+    if (copiedTimer.current) clearTimeout(copiedTimer.current);
+    copiedTimer.current = setTimeout(() => setCopied(false), 2000);
+  }, []);
+
   const active = items.find((item) => item.id === activeId) ?? items[0];
 
   return (
@@ -325,7 +376,9 @@ export default function SiteNav() {
             {/*
               The two addresses a phone can act on, repeated here because this is
               the one place in the page that is reachable from any scroll
-              position. Same pair, same markup shape, as the Contact section.
+              position, plus the address of the page itself. Same pair, same
+              markup shape, as the Contact section; the copy action is a button
+              rather than a link because it has no destination to go to.
             */}
             <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-zinc-700 px-5 py-3">
               <a
@@ -340,6 +393,13 @@ export default function SiteNav() {
               >
                 {contactContent.phone.display}
               </a>
+              <button
+                type="button"
+                onClick={copyLink}
+                className="inline-flex min-h-11 items-center font-mono eyebrow text-zinc-300 underline decoration-zinc-700 underline-offset-4 transition-colors hover:text-zinc-50 hover:decoration-zinc-300 focus-visible:text-zinc-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-50"
+              >
+                <span aria-live="polite">{copied ? navContent.copied : navContent.copyLink}</span>
+              </button>
             </div>
           </div>
         )}

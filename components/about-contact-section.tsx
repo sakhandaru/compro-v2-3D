@@ -80,9 +80,19 @@ export default function AboutContactSection() {
       <div ref={aboutWrapperRef} className="relative z-0">
         <About />
       </div>
+      {/*
+        The footer block is `#08080a` while everything above it is `#f7f6f2`,
+        so the wrapper carries that colour too: during the pin the block slides
+        up over About, and any edge the section itself does not cover would flash
+        light. The `border-t` is gone for the same reason the section dropped
+        `.section-rule` — a hairline drawn in `zinc-300` marks the boundary of a
+        light block, and here the colour change is the boundary. The shadow
+        stays, and reads the other way now: above a dark block it darkens the
+        light section it is lifting off, which is what a cast shadow does.
+      */}
       <div
         ref={contactWrapperRef}
-        className="relative z-10 bg-[#f7f6f2] shadow-[0_-24px_48px_rgba(0,0,0,0.08)] border-t border-zinc-300"
+        className="relative z-10 bg-[#08080a] shadow-[0_-32px_64px_rgba(0,0,0,0.2)]"
       >
         <Contact />
       </div>
