@@ -14,6 +14,19 @@ export const contactContent = {
 
   backToTop: "back to top",
 
+  /**
+   * Header tiap kolom footer. Lowercase mono, satu suara dengan label `~/x`
+   * yang dipakai section lain: `index` menunjuk daftar isi halaman, `direct`
+   * untuk jalur yang benar-benar menghubungi orang (email, telepon, lokasi),
+   * `channels` untuk tautan luar. Bukan judul kolom template, melainkan nama
+   * dari isi kolom itu sendiri.
+   */
+  columns: {
+    index: "index",
+    direct: "direct",
+    channels: "channels",
+  },
+
   channels: [
     { kind: "github", label: "github", href: "https://github.com/sakhandaru", external: true },
     { kind: "gitlab", label: "gitlab", href: "https://gitlab.com/sakhandaru", external: true },

@@ -167,6 +167,12 @@ body {
  * bawah diganti pb-10 dan tidak memakai section-y penuh. Satu token supaya
  * nilai vh-nya tidak ditulis ulang di markup (duplikasi yang dulu bikin
  * 16vh/20vh campur dengan 18vh/22vh).
+ *
+ * Desktop memakai clamp, bukan 20vh seperti section lain, karena Contact harus
+ * muat satu layar: ia section terakhir, jadi kalau tingginya melebihi viewport
+ * tidak ada posisi scroll yang memperlihatkan keseluruhannya sekaligus. 5vh
+ * memberi 40px pada layar 720px tinggi, dan batas 4rem berhenti menambah ruang
+ * begitu tinggi layar bukan lagi masalah.
  */
 .section-top {
   padding-top: 3rem;
@@ -178,7 +184,7 @@ body {
 }
 @media (min-width: 1024px) {
   .section-top {
-    padding-top: 20vh;
+    padding-top: clamp(2.5rem, 5vh, 4rem);
   }
 }
 
