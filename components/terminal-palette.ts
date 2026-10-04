@@ -87,10 +87,10 @@ export const CAMERA_LAG = 1.7;
  * Breathing room around the model in the wide shot. The marquee is a full-bleed
  * field and the model sits on top of it, so this is purely about how much
  * presence the terminal has.
- * Measured: at 1.2 the terminal was 31% of frame width on a 1440x900 desktop,
- * which already matched the reference, but 57% on an 834x1112 tablet because
- * portrait is bound by the horizontal fit. 1.5 lands both near 25% and 40%, so
- * the type keeps the frame and the terminal stops crowding it.
+ * Measured: at 1.9 the terminal was 18.5% of frame width on a 1440x900 desktop
+ * and 29.7% on a 390x844 phone, which read as lost against the full-bleed type
+ * field. 1.2 lands both near 32% and 48%, so the terminal is the subject while
+ * the type still reads on both sides of it.
  */
-export const WIDE_MARGIN_LANDSCAPE = 1.9;
-export const WIDE_MARGIN_PORTRAIT = 1.85;
+export const WIDE_MARGIN_LANDSCAPE = 1.2;
+export const WIDE_MARGIN_PORTRAIT = 1.2;

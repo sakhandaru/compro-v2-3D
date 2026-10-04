@@ -169,7 +169,7 @@ export default function HeroSection() {
       <section
         ref={section}
         id="home"
-        className="relative h-[300svh] sm:h-[450svh] bg-[#f7f6f2]"
+        className="relative h-[220svh] sm:h-[300svh] bg-[#f7f6f2]"
       >
       <div className="sticky top-0 h-dvh overflow-hidden">
         {/*

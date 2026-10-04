@@ -22,6 +22,17 @@ import {
   SOCKET_COLOR,
 } from "@/components/terminal-palette";
 
+/*
+  The Draco decoder is served from here, not from gstatic. drei points
+  DRACOLoader at https://www.gstatic.com/draco/versioned/decoders/1.5.5/ by
+  default, which made rendering the terminal depend on a third party answering:
+  block that origin and the model never appears, with an uncaught "Failed to
+  fetch" that no error boundary sees — no message, no retry, just an empty
+  stage. Same origin means same cache and the same failure surface as the model
+  itself. Needs the path set before the first load, including the preload.
+*/
+useGLTF.setDecoderPath("/draco/");
+
 useGLTF.preload(MODEL_URL);
 
 export type TerminalHandle = {

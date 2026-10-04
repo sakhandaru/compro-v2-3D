@@ -4,7 +4,7 @@ import { Component, useEffect, useRef, useState } from "react";
 import type { ReactNode, RefObject } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, useProgress } from "@react-three/drei";
+import { Environment, Lightformer, useGLTF, useProgress } from "@react-three/drei";
 import HeroModel, { type TerminalHandle } from "@/components/hero-model";
 import { markSceneReady } from "@/components/scene-ready";
 import { writeScreenRect } from "@/components/screen-rect";
@@ -17,6 +17,7 @@ import {
   FRONT_FILL_INTENSITY,
   KEY_INTENSITY,
   KEY_POSITION,
+  MODEL_URL,
   SCREEN_BLEED,
   SIDE_FILL_INTENSITY,
   WIDE_MARGIN_LANDSCAPE,
@@ -25,6 +26,17 @@ import {
 
 const FOV = 40;
 const HALF_FOV_RAD = (FOV / 2) * (Math.PI / 180);
+
+/*
+  Two more tries before the message goes up. A fetch interrupted mid-handshake
+  and a GPU process that has not handed back a context both recover on a second
+  attempt, and both look identical to a permanent failure from inside the error
+  boundary. The spacing is what makes the retry worth anything: a frame later
+  the same conditions are still in place. Three tries means a reader who really
+  is offline waits about two and a half seconds, not indefinitely.
+*/
+const MAX_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 1200;
 
 /*
   The screen's own outward normal, taken from the model rather than guessed. The
@@ -229,14 +241,21 @@ function Rig({
   );
 }
 
-function LoadBar() {
+/*
+  `muted` is set once an attempt has failed. The loading manager appends every
+  error it has ever seen and never clears that list, so after a retry the stale
+  failure line would sit next to a model that is back on screen. Muted, the bar
+  only speaks while a fetch is actually in flight.
+*/
+function LoadBar({ muted }: { muted: boolean }) {
   const { active, progress, errors } = useProgress();
-  if (!active && errors.length === 0) return null;
+  const errored = errors.length > 0 && !muted;
+  if (!active && !errored) return null;
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-20 px-4 pt-4">
       <p className="font-mono text-[11px] text-zinc-600">
-        {errors.length > 0 ? heroContent.model.error : `${heroContent.model.loading} ${progress.toFixed(0)}%`}
+        {errored ? heroContent.model.error : `${heroContent.model.loading} ${progress.toFixed(0)}%`}
       </p>
       <div className="mt-2 h-px w-full bg-zinc-300">
         <div className="h-px bg-zinc-900" style={{ width: `${progress}%` }} />
@@ -273,8 +292,32 @@ export default function HeroCanvas({
 }) {
   const [handle, setHandle] = useState<TerminalHandle | null>(null);
   const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [pending, setPending] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
+  const attempts = useRef(0);
+
+  /*
+    The delay lives in this effect, not in a timer held by a ref. The component's
+    effects are torn down and re-established mid-attempt — the ref kept its
+    timeout, but nothing was left to fire it, so the retry was scheduled and
+    never ran: canvas gone, no message, no further request. Keyed on `pending`
+    instead, an effect that is set back up simply re-arms the same delay.
+
+    suspend-react is cleared here rather than on remount because it caches the
+    rejection against [GLTFLoader, url] and throws it on every later render: a
+    bare remount replays the same failure instead of asking for the file again.
+  */
+  useEffect(() => {
+    if (!pending) return;
+    const timer = setTimeout(() => {
+      useGLTF.clear(MODEL_URL);
+      setPending(false);
+      setAttempt((current) => current + 1);
+    }, RETRY_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [pending]);
 
   /*
     The loop renders only while the hero is on screen. Past the pin the canvas
@@ -295,10 +338,37 @@ export default function HeroCanvas({
     return () => observer.disconnect();
   }, []);
 
+  /*
+    First failure releases the entrance — a dead scene must not hold a black
+    screen for three and a half seconds — and then asks for two more tries. The
+    boundary's own state has to go with the attempt, hence the key: it is a
+    class with no reset path.
+  */
+  const handleFail = () => {
+    markSceneReady();
+
+    if (attempts.current + 1 >= MAX_ATTEMPTS) {
+      setFailed(true);
+      return;
+    }
+
+    attempts.current += 1;
+    setPending(true);
+  };
+
+  /*
+    Failure reports instead of covering. The wrapper sits above the marquee, so
+    an opaque panel here hides the type the message claims is still readable and
+    leaves an empty rectangle where the hero should be. The message takes the
+    load bar's slot, so a dead WebGL context and a missing model leave the same
+    shape on screen as a slow load. The chip keeps the 11px line legible over
+    248px glyphs, and being the section colour it only shows where a glyph is
+    actually passing behind it.
+  */
   if (failed) {
     return (
-      <div className="absolute inset-0 grid place-items-center bg-[#f7f6f2] px-6 text-center">
-        <p className="font-mono text-xs leading-relaxed text-zinc-600">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 px-4 pt-4">
+        <p className="inline-block bg-[#f7f6f2] px-1 font-mono text-[11px] leading-relaxed text-zinc-600">
           Model 3D tidak dapat dimuat.
           <br />
           Teks hero tetap terbaca tanpa animasi.
@@ -309,15 +379,8 @@ export default function HeroCanvas({
 
   return (
     <div ref={box} className="absolute inset-0">
-      <LoadBar />
-      <SceneBoundary
-        onFail={() => {
-          setFailed(true);
-          // A dead scene releases the entrance too. The reader should not hold a
-          // black screen for three and a half seconds to be shown this message.
-          markSceneReady();
-        }}
-      >
+      <LoadBar muted={attempt > 0} />
+      <SceneBoundary key={attempt} onFail={handleFail}>
         <Canvas
           frameloop={inView ? "always" : "never"}
           /*
